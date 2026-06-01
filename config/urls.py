@@ -19,11 +19,7 @@ urlpatterns = [
         TokenRefreshView.as_view()
     ),
     path('dashboard/', include('dashboard.urls')),
-    path(
-    '',
-    auth_views.LoginView.as_view(
+    path('', auth_views.LoginView.as_view(
         template_name='registration/login.html'
-    ),
-    name='login'
-),
+    )),
 ]

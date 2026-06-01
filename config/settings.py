@@ -31,12 +31,9 @@ SECRET_KEY = 'django-insecure--cld-3t6f7i5tt*%6yv0+a1wen6czv(o+6m)us(gue%rze_gis
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS =  ['.onrender.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://*.onrender.com'
-]
-
+CSRF_TRUSTED_ORIGINS = []
 # Application definition
 
 INSTALLED_APPS = [
@@ -72,20 +69,12 @@ cloudinary.config(
 )
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'axes.middleware.AxesMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'dashboard.middleware.AutoLogoutMiddleware',
 ]
 ROOT_URLCONF = 'config.urls'
@@ -163,8 +152,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-SESSION_COOKIE_AGE = 900  # 15 minutes
-SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_AGE = 1209600   # 15 minutes
+SESSION_SAVE_EVERY_REQUEST = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 REST_FRAMEWORK = {

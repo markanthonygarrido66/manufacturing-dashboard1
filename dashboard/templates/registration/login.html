@@ -4,15 +4,15 @@
     <title>Login</title>
 </head>
 <body>
-    <h2>Manufacturing Dashboard Login</h2>
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
+<h2>Manufacturing Dashboard Login</h2>
 
-        <button type="submit">
-            Login
-        </button>
-    </form>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Login</button>
+</form>
+
 </body>
 </html>
