@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -56,6 +59,12 @@ INSTALLED_APPS = [
     'sensors',
     'accounts',
 ]
+cloudinary.config(
+    cloud_name = os.environ.get(' dbgty18gr'),
+    api_key = os.environ.get('949184369146935'),
+    api_secret = os.environ.get('9hiuv6HI6JIDD3ifXQxcOORfa5M'),
+    secure = True
+)
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
