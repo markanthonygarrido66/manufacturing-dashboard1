@@ -59,6 +59,11 @@ INSTALLED_APPS = [
     'sensors',
     'accounts',
 ]
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 cloudinary.config(
     cloud_name = os.environ.get('dbgty18gr'),
     api_key = os.environ.get('949184369146935'),
@@ -159,6 +164,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 SESSION_COOKIE_AGE = 900  # 15 minutes
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

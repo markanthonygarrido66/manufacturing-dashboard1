@@ -12,7 +12,8 @@
         <option value="">All Lines</option>
 
         {% for line in production_lines %}
-            <option value="{{ line.id }}">
+            <option value="{{ line.id }}"
+                {% if request.GET.line == line.id|stringformat:"s" %}selected{% endif %}>
                 {{ line.name }}
             </option>
         {% endfor %}
@@ -22,15 +23,15 @@
     <br><br>
 
     <label>Start Date:</label>
-
     <input type="date"
-           name="start_date"
+           name="start"
+           value="{{ request.GET.start }}"
            onchange="this.form.submit()">
 
     <label>End Date:</label>
-
     <input type="date"
-           name="end_date"
+           name="end"
+           value="{{ request.GET.end }}"
            onchange="this.form.submit()">
 
 </form>
@@ -51,6 +52,10 @@
         <td>{{ record.production_line }}</td>
         <td>{{ record.production_date }}</td>
         <td>{{ record.yield_percentage }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="3">No records found</td>
     </tr>
     {% endfor %}
 </table>
