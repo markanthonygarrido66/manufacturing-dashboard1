@@ -2,18 +2,17 @@ from django.shortcuts import render
 from .models import ProductionLine, YieldRecord
 from django.contrib.auth.decorators import login_required
 
-def dashboard_view(request):
+
+@login_required
+def dashboard(request):
 
     production_lines = ProductionLine.objects.all()
-
     records = YieldRecord.objects.all()
 
     line = request.GET.get('line')
 
     if line:
-        records = records.filter(
-            production_line_id=line
-        )
+        records = records.filter(production_line_id=line)
 
     return render(
         request,
@@ -23,6 +22,3 @@ def dashboard_view(request):
             'records': records
         }
     )
-@login_required
-def dashboard(request):
-    ...
