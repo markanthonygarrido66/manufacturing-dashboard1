@@ -82,6 +82,13 @@
         <td colspan="3">No records found</td>
     </tr>
     {% endfor %}
+    <script>
+document.querySelectorAll('select, input').forEach(el => {
+    el.addEventListener('change', function() {
+        this.form.submit();
+    });
+});
+</script>
 </table>
 
 {% endblock %}

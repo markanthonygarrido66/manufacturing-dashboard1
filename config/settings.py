@@ -29,12 +29,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure--cld-3t6f7i5tt*%6yv0+a1wen6czv(o+6m)us(gue%rze_gis'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS =  ['.onrender.com']
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://*.railway.app'
+    'https://*.onrender.com'
 ]
 
 # Application definition
@@ -86,6 +86,7 @@ MIDDLEWARE = [
 
     'axes.middleware.AxesMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'dashboard.middleware.AutoLogoutMiddleware',
 ]
 ROOT_URLCONF = 'config.urls'
 
