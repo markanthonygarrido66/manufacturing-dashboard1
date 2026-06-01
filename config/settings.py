@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'accounts',
 ]
 cloudinary.config(
-    cloud_name = os.environ.get(' dbgty18gr'),
+    cloud_name = os.environ.get('dbgty18gr'),
     api_key = os.environ.get('949184369146935'),
     api_secret = os.environ.get('9hiuv6HI6JIDD3ifXQxcOORfa5M'),
     secure = True
