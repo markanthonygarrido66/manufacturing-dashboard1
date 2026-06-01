@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,5 +18,12 @@ urlpatterns = [
         'api/token/refresh/',
         TokenRefreshView.as_view()
     ),
-    path('', include('dashboard.urls')),
+    path('dashboard', include('dashboard.urls')),
+    path(
+    '',
+    auth_views.LoginView.as_view(
+        template_name='registration/login.html'
+    ),
+    name='login'
+),
 ]

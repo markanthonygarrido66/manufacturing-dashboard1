@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import ProductionLine, YieldRecord
+from django.contrib.auth.decorators import login_required
 
 def dashboard_view(request):
 
@@ -22,3 +23,6 @@ def dashboard_view(request):
             'records': records
         }
     )
+@login_required
+def dashboard(request):
+    ...
