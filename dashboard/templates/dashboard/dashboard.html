@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Production Dashboard</h2>
+
+<form method="GET">
+
+    <label>Production Line:</label>
+
+    <select name="line" onchange="this.form.submit()">
+        <option value="">All Lines</option>
+
+        {% for line in production_lines %}
+            <option value="{{ line.id }}">
+                {{ line.name }}
+            </option>
+        {% endfor %}
+
+    </select>
+
+    <br><br>
+
+    <label>Start Date:</label>
+
+    <input type="date"
+           name="start_date"
+           onchange="this.form.submit()">
+
+    <label>End Date:</label>
+
+    <input type="date"
+           name="end_date"
+           onchange="this.form.submit()">
+
+</form>
+
+<hr>
+
+<h3>Yield Records</h3>
+
+<table border="1">
+    <tr>
+        <th>Line</th>
+        <th>Date</th>
+        <th>Yield %</th>
+    </tr>
+
+    {% for record in records %}
+    <tr>
+        <td>{{ record.production_line }}</td>
+        <td>{{ record.production_date }}</td>
+        <td>{{ record.yield_percentage }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
