@@ -32,12 +32,12 @@ def dashboard(request):
         role = request.user.userprofile.role
 
     return render(request, 'dashboard/dashboard.html', {
-        'production_lines': production_lines,
-        'records': records,
-        'total_yield': total_yield,
-        'avg_yield': avg_yield,
-        'role': role   
-    })
+    'production_lines': production_lines,
+    'records': records,
+    'total_yield': total_yield,
+    'avg_yield': avg_yield,
+    'role': role
+})
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def push_yield(request):
