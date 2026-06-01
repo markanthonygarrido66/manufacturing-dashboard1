@@ -5,6 +5,7 @@ from .decorators import allowed_roles
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.db.models import Sum, Avg
 
 @login_required
 @allowed_roles(['manager', 'executive'])
@@ -14,18 +15,28 @@ def dashboard(request):
     records = YieldRecord.objects.all()
 
     line = request.GET.get('line')
-    start_date = request.GET.get('start')
-    end_date = request.GET.get('end')
+    start = request.GET.get('start')
+    end = request.GET.get('end')
 
     if line:
         records = records.filter(production_line_id=line)
 
-    if start_date and end_date:
-        records = records.filter(date__range=[start_date, end_date])
+    if start and end:
+        records = records.filter(production_date__range=[start, end])
+
+    total_yield = records.aggregate(Sum('yield_percentage'))
+    avg_yield = records.aggregate(Avg('yield_percentage'))
+
+    role = None
+    if hasattr(request.user, 'userprofile'):
+        role = request.user.userprofile.role
 
     return render(request, 'dashboard/dashboard.html', {
         'production_lines': production_lines,
-        'records': records
+        'records': records,
+        'total_yield': total_yield,
+        'avg_yield': avg_yield,
+        'role': role   
     })
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
