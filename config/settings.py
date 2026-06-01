@@ -135,6 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+AXES_FAILURE_LIMIT = 20
 
 
 # Internationalization
