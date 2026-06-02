@@ -55,7 +55,13 @@ def dashboard(request):
         role = request.user.userprofile.role
 
 def dashboard(request):
-    return render(request, "dashboard/dashboard.html")
+    context = {
+        "total_yield": 0,
+        "production_count": 0,
+        "materials_used": 0,
+        "efficiency": 0
+    }
+    return render(request, "dashboard/dashboard.html", context)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def push_yield(request):
