@@ -24,7 +24,7 @@ urlpatterns = [
         template_name='registration/login.html'
     )),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
+   
     path('production/', views.production_view, name='production'),
     path('materials/', views.materials_view, name='materials'),
     path('sensors/', views.sensors_view, name='sensors'),
