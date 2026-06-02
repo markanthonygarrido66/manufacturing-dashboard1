@@ -187,9 +187,9 @@ table td {
 </div>
 
 <script>
-const temperature = Number("{{ temperature|default:0 }}");
-const humidity = Number("{{ humidity|default:0 }}");
-const pressure = Number("{{ pressure|default:0 }}");
+const temperature = Number("{{ temperature|default:}}");
+const humidity = Number("{{ humidity|default: }}");
+const pressure = Number("{{ pressure|default:}}");
 
 const ctx = document.getElementById('sensorChart');
 
