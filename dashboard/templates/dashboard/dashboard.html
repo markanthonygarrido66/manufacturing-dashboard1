@@ -4,6 +4,7 @@
 
 <div class="filters">
     <form method="GET">
+        {% csrf_token %}
         <input type="date" name="date">
 
         <select name="line">
