@@ -1,162 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/base.html' %}
 
 {% block content %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<div class="filters">
+    <form method="GET">
+        <input type="date" name="date">
 
-<div style="background:#0f172a; color:white; padding:20px; border-radius:10px;">
+        <select name="line">
+            <option value="">All Production Lines</option>
+            <option value="L1">Line 1</option>
+            <option value="L2">Line 2</option>
+        </select>
 
+        <button type="submit">Filter</button>
+    </form>
+</div>
 
-<h2>🏭 Manufacturing Command Room</h2>
+<div class="cards">
 
-<p><b>Role:</b> {{ role }}</p>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" style="background:red;color:white;">
-        Logout
-    </button>
-</form>
-<hr style="border-color:#334155;">
-
-<!-- KPI CARDS -->
-<div style="display:flex; gap:20px; margin-top:20px; flex-wrap:wrap;">
-
-    <div style="background:#1e293b; padding:15px; border-radius:10px; width:220px;">
-        <h4>Total Yield</h4>
-        <h2>{{ total_yield.yield_percentage__sum|default:0 }}</h2>
+    <div class="card">
+        <h3>Total Yield</h3>
+        <p>{{ total_yield }}</p>
     </div>
 
-    <div style="background:#1e293b; padding:15px; border-radius:10px; width:220px;">
-        <h4>Average Yield</h4>
-        <h2>{{ avg_yield.yield_percentage__avg|default:0|floatformat:2 }}</h2>
+    <div class="card">
+        <h3>Production Count</h3>
+        <p>{{ production_count }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Materials Used</h3>
+        <p>{{ materials_used }}</p>
+    </div>
+
+    <div class="card">
+        <h3>Efficiency</h3>
+        <p>{{ efficiency }}%</p>
     </div>
 
 </div>
-
-<hr style="border-color:#334155; margin-top:20px;">
-
-<!-- CHART -->
-<h3>📈 Yield Trend Analysis</h3>
-
-<div style="background:#1e293b; padding:15px; border-radius:10px;">
-    <canvas id="yieldChart"></canvas>
-</div>
-
-<hr style="border-color:#334155; margin-top:20px;">
-
-<!-- FILTERS -->
-<h3>🔍 Live Filters</h3>
-
-<form method="GET" style="display:flex; gap:10px; flex-wrap:wrap;">
-
-    <select name="line" onchange="this.form.submit()">
-        <option value="">All Lines</option>
-
-        {% for line in production_lines %}
-            <option value="{{ line.id }}"
-                {% if request.GET.line == line.id|stringformat:"s" %}
-                    selected
-                {% endif %}>
-                {{ line.name }}
-            </option>
-        {% endfor %}
-    </select>
-
-    <input type="date"
-           name="start"
-           value="{{ request.GET.start }}"
-           onchange="this.form.submit()">
-
-    <input type="date"
-           name="end"
-           value="{{ request.GET.end }}"
-           onchange="this.form.submit()">
-
-</form>
-
-<hr style="border-color:#334155; margin-top:20px;">
-
-<!-- TABLE -->
-<h3>📦 Yield Records</h3>
-
-<table style="width:100%; border-collapse:collapse; background:#1e293b;">
-    <tr style="background:#334155;">
-        <th>Line</th>
-        <th>Date</th>
-        <th>Yield %</th>
-    </tr>
-
-    {% for record in records %}
-    <tr style="text-align:center;">
-        <td>{{ record.production_line }}</td>
-        <td>{{ record.production_date }}</td>
-        <td>{{ record.yield_percentage }}</td>
-    </tr>
-    {% empty %}
-    <tr>
-        <td colspan="3">No records found</td>
-    </tr>
-    {% endfor %}
-</table>
-
-
-</div>
-
-{{ chart_labels|json_script:"chart-labels" }}
-{{ chart_data|json_script:"chart-data" }}
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    const labels = JSON.parse(
-        document.getElementById('chart-labels').textContent
-    );
-
-    const dataValues = JSON.parse(
-        document.getElementById('chart-data').textContent
-    );
-
-    const ctx = document.getElementById('yieldChart');
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [{
-                label: 'Yield %',
-                data: dataValues,
-                borderColor: '#38bdf8',
-                backgroundColor: 'rgba(56,189,248,0.2)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    labels: {
-                        color: 'white'
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    ticks: {
-                        color: 'white'
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: 'white'
-                    }
-                }
-            }
-        }
-    });
-
-});
-</script>
 
 {% endblock %}
