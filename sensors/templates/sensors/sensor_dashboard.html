@@ -221,5 +221,31 @@ new Chart(ctx, {
     }
 });
 </script>
+<div id="temp-value">{{ temperature }}</div>
+
+<div id="humidity-value">{{ humidity }}</div>
+
+<div id="pressure-value">{{ pressure }}</div>
+
+setInterval(() => {
+
+    fetch("/sensors/live/")
+    .then(res => res.json())
+    .then(data => {
+
+        document.getElementById(
+            "temp-value"
+        ).innerText = data.temperature;
+
+        document.getElementById(
+            "humidity-value"
+        ).innerText = data.humidity;
+
+        document.getElementById(
+            "pressure-value"
+        ).innerText = data.pressure;
+    });
+
+}, 5000);
 
 {% endblock %}

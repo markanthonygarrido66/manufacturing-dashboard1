@@ -193,5 +193,33 @@ td {
         </tbody>
     </table>
 </div>
+<tbody id="materials-body">
+</tbody>
+
+
+setInterval(() => {
+
+    fetch("/materials/live/")
+    .then(res => res.json())
+    .then(data => {
+
+        let rows = "";
+
+        data.forEach(item => {
+
+            rows += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.stock}</td>
+            </tr>`;
+        });
+
+        document.getElementById(
+            "materials-body"
+        ).innerHTML = rows;
+
+    });
+
+}, 5000);
 
 {% endblock %}

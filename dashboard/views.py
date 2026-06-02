@@ -74,23 +74,17 @@ def push_yield(request):
 # LIVE API (AJAX / IoT READY)
 # =========================
 def dashboard_live(request):
-    
-    line = request.GET.get("line")
 
     records = YieldRecord.objects.all()
 
-    if line:
-        records = records.filter(production_line_id=line)
-
-    data = {
-        "total_yield": records.aggregate(Sum('yield_percentage'))['yield_percentage__sum'] or 0,
-        "avg_yield": records.aggregate(Avg('yield_percentage'))['yield_percentage__avg'] or 0,
-        "production_output": records.count(),
-        "material_used": 400  # placeholder (pwede mo palitan later)
-    }
-
     return JsonResponse({
-        "total_yield": 1200,
-        "production_output": 950,
-        "material_used": 400
+        "total_yield": records.aggregate(
+            Sum("yield_percentage")
+        )["yield_percentage__sum"] or 0,
+
+        "avg_yield": records.aggregate(
+            Avg("yield_percentage")
+        )["yield_percentage__avg"] or 0,
+
+        "production_count": records.count()
     })

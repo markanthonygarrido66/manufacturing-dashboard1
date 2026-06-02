@@ -154,6 +154,8 @@ td {
     </div>
 
 </div>
+<tbody id="production-body">
+</tbody>
 
 <!-- PRODUCTION TABLE -->
 <div class="panel">
@@ -181,5 +183,33 @@ td {
         </tbody>
     </table>
 </div>
+
+/* LIVE UPDATE */
+
+setInterval(() => {
+
+    fetch("/production/live/")
+    .then(res => res.json())
+    .then(data => {
+
+        let rows = "";
+
+        data.forEach(item => {
+
+            rows += `
+            <tr>
+                <td>${item.line}</td>
+                <td>${item.output}</td>
+                <td>${item.date}</td>
+            </tr>`;
+        });
+
+        document.getElementById(
+            "production-body"
+        ).innerHTML = rows;
+
+    });
+
+}, 5000);
 
 {% endblock %}
