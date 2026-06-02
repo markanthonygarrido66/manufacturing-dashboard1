@@ -1,3 +1,4 @@
 from django.shortcuts import render
 
-# Create your views here.
+def sensor_dashboard(request):
+    return render(request, 'sensors/sensor_dashboard.html')

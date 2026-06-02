@@ -24,9 +24,9 @@ urlpatterns = [
         template_name='registration/login.html'
     )),
     path('logout/', LogoutView.as_view(), name='logout'),
-   path('app/dashboard/', include('dashboard.urls')),
-    path('app/production/', include('production.urls')),
-    path('app/materials/', include('materials.urls')),
-    path('app/sensors/', include('sensors.urls')),
+   path('dashboard/', include('dashboard.urls')),
+    path('production/', include('production.urls')),
+    path('materials/', include('materials.urls')),
+    path('sensors/', include('sensors.urls')),
     
 ]
