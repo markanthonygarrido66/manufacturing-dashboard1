@@ -10,12 +10,7 @@
 <h2>🏭 Manufacturing Command Room</h2>
 
 <p><b>Role:</b> {{ role }}</p>
-<form method="post" action="{% url 'logout' %}">
-    {% csrf_token %}
-    <button type="submit" style="background:red;color:white;">
-        Logout
-    </button>
-</form>
+
 <hr style="border-color:#334155;">
 
 <!-- KPI CARDS -->
