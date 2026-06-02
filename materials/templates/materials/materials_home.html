@@ -1,132 +1,197 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
 <style>
 
-.header{
-    background:linear-gradient(135deg,#0f172a,#1e3a8a);
-    color:white;
-    padding:30px;
-    border-radius:16px;
-    margin-bottom:25px;
+/* =========================
+   MODERN MATERIALS PAGE
+========================= */
+
+body {
+    background: #0b1220;
 }
 
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-    gap:20px;
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.card{
-    background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
+.header h2 {
+    margin: 0;
+    font-size: 24px;
 }
 
-.card h3{
-    color:#64748b;
+.header small {
+    opacity: 0.7;
 }
 
-.card h2{
-    font-size:28px;
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
 }
 
-.panel{
-    background:white;
-    margin-top:20px;
-    padding:20px;
-    border-radius:15px;
+/* CARD */
+.card {
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border: 1px solid #1f2937;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: 0.3s ease;
+    color: white;
 }
 
-table{
-    width:100%;
-    border-collapse:collapse;
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
 }
 
-th{
-    background:#0f172a;
-    color:white;
-    padding:12px;
+/* VALUE */
+.value {
+    font-size: 30px;
+    font-weight: bold;
+    color: #38bdf8;
 }
 
-td{
-    padding:12px;
-    text-align:center;
-    border-bottom:1px solid #e2e8f0;
+/* LABEL */
+.label {
+    color: #94a3b8;
+    font-size: 14px;
 }
 
-.low{
-    background:#ef4444;
-    color:white;
-    padding:5px 10px;
-    border-radius:20px;
+/* STATUS */
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 10px;
 }
 
-.ok{
-    background:#22c55e;
-    color:white;
+.good {
+    background: #22c55e;
+    color: white;
+}
+
+.warning {
+    background: #f59e0b;
+    color: white;
+}
+
+.danger {
+    background: #ef4444;
+    color: white;
+}
+
+/* PANEL */
+.panel {
+    margin-top: 20px;
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.panel h3 {
+    color: #cbd5e1;
+    margin-bottom: 15px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th {
+    background: #111827;
+    padding: 12px;
+    text-align: left;
+    color: #94a3b8;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #1f2937;
 }
 
 </style>
 
+<!-- HEADER -->
 <div class="header">
-    <h1>📦 Materials Management</h1>
-    <p>Inventory and supply chain monitoring system</p>
+    <h2>📦 Materials Control Room</h2>
+    <small>Real-time inventory & supply monitoring system</small>
 </div>
 
+<!-- MATERIAL SUMMARY CARDS -->
 <div class="grid">
 
     <div class="card">
-        <h3>Total Materials</h3>
-        <h2>1,250</h2>
+        <div class="label">Total Materials</div>
+        <div class="value">{{ total_materials|default:0 }}</div>
+        <div class="status good">STABLE</div>
     </div>
 
     <div class="card">
-        <h3>Low Stock Items</h3>
-        <h2>12</h2>
+        <div class="label">Used Today</div>
+        <div class="value">{{ used_today|default:0 }}</div>
+        <div class="status warning">ACTIVE</div>
     </div>
 
     <div class="card">
-        <h3>Active Suppliers</h3>
-        <h2>8</h2>
+        <div class="label">Low Stock Items</div>
+        <div class="value">{{ low_stock|default:0 }}</div>
+        <div class="status danger">ALERT</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Inventory Status</div>
+        <div class="value">LIVE</div>
+        <div class="status good">MONITORING</div>
     </div>
 
 </div>
 
+<!-- MATERIAL TABLE -->
 <div class="panel">
-
-    <h2>📋 Inventory Status</h2>
+    <h3>📋 Material Inventory List</h3>
 
     <table>
-
         <thead>
             <tr>
-                <th>Material</th>
+                <th>Material Name</th>
                 <th>Stock</th>
                 <th>Status</th>
             </tr>
         </thead>
 
         <tbody>
-
+            {% for m in materials %}
             <tr>
-                <td>Steel</td>
-                <td>120</td>
-                <td><span class="ok">OK</span></td>
-            </tr>
+                <td>{{ m.name }}</td>
+                <td>{{ m.stock }}</td>
 
-            <tr>
-                <td>Aluminum</td>
-                <td>20</td>
-                <td><span class="low">LOW</span></td>
+                <td>
+                    {% if m.stock > 50 %}
+                        <span class="status good">GOOD</span>
+                    {% elif m.stock > 20 %}
+                        <span class="status warning">LOW</span>
+                    {% else %}
+                        <span class="status danger">CRITICAL</span>
+                    {% endif %}
+                </td>
             </tr>
-
+            {% endfor %}
         </tbody>
-
     </table>
-
 </div>
 
 {% endblock %}
