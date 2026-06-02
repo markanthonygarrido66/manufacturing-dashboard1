@@ -7,5 +7,5 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
     path('api/yield/', push_yield),
     path("dashboard/live/", views.dashboard_live, name="dashboard_live"),
-   
+    path('api/push-yield/', views.push_yield, name='push_yield'),
 ]

@@ -6,7 +6,9 @@ from django.db.models import Sum, Avg
 from .decorators import allowed_roles
 from .models import ProductionLine, YieldRecord
 
-
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 # =========================
 # MAIN DASHBOARD VIEW
 # =========================
@@ -52,6 +54,21 @@ def dashboard(request):
 
     return render(request, "dashboard/dashboard.html", context)
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def push_yield(request):
+
+    line_id = request.data.get('line_id')
+    output = request.data.get('output')
+
+    YieldRecord.objects.create(
+        production_line_id=line_id,
+        output=output
+    )
+
+    return Response({
+        "message": "Yield recorded successfully"
+    })
 
 # =========================
 # LIVE API (AJAX / IoT READY)
