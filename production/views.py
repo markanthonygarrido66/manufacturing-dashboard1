@@ -8,16 +8,20 @@ def production_home(request):
     return render(request, 'production/production_home.html')
 
 
+from django.http import JsonResponse
+from .models import ProductionRecord
+
 def production_live(request):
 
-    records = ProductionRecord.objects.order_by('-production_date')[:10]
+    records = ProductionRecord.objects.all()
 
     data = []
 
     for r in records:
+
         data.append({
             "line": r.production_line.name,
-            "output": r.yield_percentage + random.randint(-2, 2),
+            "output": r.output,
             "date": str(r.production_date)
         })
 

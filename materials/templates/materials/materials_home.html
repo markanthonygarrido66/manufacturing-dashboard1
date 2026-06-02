@@ -173,7 +173,7 @@ td {
             </tr>
         </thead>
 
-        <tbody>
+        <tbody id="materials-body">
             {% for m in materials %}
             <tr>
                 <td>{{ m.name }}</td>
@@ -196,7 +196,7 @@ td {
 <tbody id="materials-body">
 </tbody>
 
-
+<script>    
 setInterval(() => {
 
     fetch("/materials/live/")
@@ -221,5 +221,6 @@ setInterval(() => {
     });
 
 }, 5000);
+</script>
 
 {% endblock %}

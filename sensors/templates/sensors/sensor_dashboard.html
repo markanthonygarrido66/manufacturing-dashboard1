@@ -226,7 +226,7 @@ new Chart(ctx, {
 <div id="humidity-value">{{ humidity }}</div>
 
 <div id="pressure-value">{{ pressure }}</div>
-
+<script>    
 setInterval(() => {
 
     fetch("/sensors/live/")
@@ -247,5 +247,6 @@ setInterval(() => {
     });
 
 }, 5000);
+</script>
 
 {% endblock %}
