@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 import time
 
 class AutoLogoutMiddleware:
+
     def __init__(self, get_response):
         self.get_response = get_response
 
@@ -10,14 +11,14 @@ class AutoLogoutMiddleware:
 
         if request.user.is_authenticated:
 
-            last_activity = request.session.get('last_activity')
+            now = time.time()
+            last = request.session.get("last_activity", now)
 
-            if last_activity:
-                if time.time() - last_activity > 900:
-                    logout(request)
-                    return redirect('login')
+            if now - last > 900:  # 15 minutes
+                from django.contrib.auth import logout
+                logout(request)
+                return redirect("/")
 
-            request.session['last_activity'] = time.time()
+            request.session["last_activity"] = now
 
         return self.get_response(request)
-    

@@ -10,15 +10,8 @@ from dashboard import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path(
-        'api/token/',
-        TokenObtainPairView.as_view()
-    ),
-
-    path(
-        'api/token/refresh/',
-        TokenRefreshView.as_view()
-    ),
+     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     
     path('', auth_views.LoginView.as_view(
         template_name='registration/login.html'
@@ -28,5 +21,5 @@ urlpatterns = [
     path('production/', include('production.urls')),
     path('materials/', include('materials.urls')),
     path('sensors/', include('sensors.urls')),
-    
+    path("", include("sensors.urls")),
 ]

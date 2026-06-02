@@ -1,257 +1,165 @@
 {% extends 'base.html' %}
-
 {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 
-body{
-    background:#0b1220;
+/* ===== COMMAND ROOM STYLE ===== */
+.command-room {
+    background: #0b1220;
+    color: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
 }
 
-/* HEADER */
-.header{
-    background:linear-gradient(135deg,#020617,#1e3a8a);
-    color:white;
-    padding:25px;
-    border-radius:16px;
-    margin-bottom:20px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 15px;
 }
 
-.header h1{
-    margin:0;
-    font-size:28px;
+.card {
+    background: #111a2e;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
 }
 
-/* GRID */
-.grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+.card h3 {
+    color: #94a3b8;
+    font-size: 14px;
 }
 
-/* KPI CARDS */
-.card{
-    background:#0f172a;
-    color:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 0 20px rgba(37,99,235,.2);
-    position:relative;
-    overflow:hidden;
+.card h2 {
+    font-size: 26px;
 }
 
-.card h3{
-    color:#94a3b8;
-    font-size:14px;
+/* FILTER BAR */
+.filters {
+    display: flex;
+    gap: 10px;
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
 }
 
-.card h2{
-    font-size:30px;
-}
-
-/* LIVE DOT */
-.live{
-    width:10px;
-    height:10px;
-    background:#22c55e;
-    border-radius:50%;
-    display:inline-block;
-    animation:pulse 1s infinite;
-    margin-right:8px;
-}
-
-@keyframes pulse{
-    0%{transform:scale(1);opacity:1;}
-    50%{transform:scale(1.5);opacity:.5;}
-    100%{transform:scale(1);opacity:1;}
-}
-
-/* PANELS */
-.panel{
-    background:#0f172a;
-    margin-top:20px;
-    padding:20px;
-    border-radius:15px;
-    color:white;
-    box-shadow:0 0 25px rgba(37,99,235,.15);
-}
-
-.panel h3{
-    margin-bottom:15px;
-}
-
-/* TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-}
-
-th{
-    background:#1e293b;
-    padding:12px;
-    text-align:center;
-}
-
-td{
-    padding:12px;
-    text-align:center;
-    border-bottom:1px solid #1e293b;
+.filters select,
+.filters input {
+    padding: 8px;
 }
 
 /* STATUS */
-.ok{
-    background:#22c55e;
-    padding:5px 10px;
-    border-radius:20px;
+.online {
+    color: #22c55e;
+    font-weight: bold;
 }
 
-.warn{
-    background:#f59e0b;
-    padding:5px 10px;
-    border-radius:20px;
+.offline {
+    color: #ef4444;
+    font-weight: bold;
 }
 
-.bad{
-    background:#ef4444;
-    padding:5px 10px;
-    border-radius:20px;
-}
-
-/* ALERT BAR */
-.alert{
-    background:#ef4444;
-    color:white;
-    padding:10px;
-    border-radius:10px;
-    margin-top:10px;
-    display:none;
-}
-
-/* CLOCK */
-.clock{
-    font-size:18px;
-    color:#93c5fd;
+.chart-box {
+    height: 320px;
 }
 
 </style>
 
-<div class="header">
-    <h1>🏭 Factory Control Room</h1>
-    <div class="clock" id="clock"></div>
-    <p><span class="live"></span>LIVE SYSTEM MONITORING ACTIVE</p>
+<!-- HEADER -->
+<div class="command-room">
+    <h2>🏭 Manufacturing Command Center</h2>
+    <p>Real-Time Yield, Production & Material Monitoring System</p>
 </div>
 
-<!-- KPI LIVE GRID -->
+<!-- FILTERS (AUTO SUBMIT) -->
+<form id="filterForm" class="filters" method="GET">
+
+    <select name="line" onchange="this.form.submit()">
+        <option value="">All Lines</option>
+        <option value="line1">Line 1</option>
+        <option value="line2">Line 2</option>
+        <option value="line3">Line 3</option>
+    </select>
+
+    <input type="date" name="from" onchange="this.form.submit()">
+    <input type="date" name="to" onchange="this.form.submit()">
+
+</form>
+
+<!-- KPI GRID -->
 <div class="grid">
 
     <div class="card">
-        <h3>🟢 LIVE OUTPUT</h3>
-        <h2 id="output">12,540</h2>
+        <h3>Temperature</h3>
+        <h2 id="temp">{{ temperature }}</h2>
     </div>
 
     <div class="card">
-        <h3>⚙ Efficiency</h3>
-        <h2 id="efficiency">96.8%</h2>
+        <h3>Humidity</h3>
+        <h2 id="hum">{{ humidity }}</h2>
     </div>
 
     <div class="card">
-        <h3>📦 Material Flow</h3>
-        <h2 id="material">Stable</h2>
+        <h3>Pressure</h3>
+        <h2 id="pres">{{ pressure }}</h2>
     </div>
 
     <div class="card">
-        <h3>📡 Sensor Health</h3>
-        <h2 id="sensor">OK</h2>
+        <h3>System Status</h3>
+        <h2 class="online">ONLINE</h2>
     </div>
 
 </div>
 
-<!-- ALERT -->
-<div class="alert" id="alertBox">
-⚠ Warning: Production fluctuation detected on Line B
-</div>
+<div class="grid" style="margin-top:15px;">
 
-<!-- PRODUCTION TABLE -->
-<div class="panel">
+    <div class="card">
+        <h3>Total Yield</h3>
+        <h2 id="yield">{{ total_yield }}</h2>
+    </div>
 
-    <h3>📊 Live Production Lines</h3>
+    <div class="card">
+        <h3>Production Output</h3>
+        <h2 id="output">{{ production_output }}</h2>
+    </div>
 
-    <table>
-        <tr>
-            <th>Line</th>
-            <th>Output</th>
-            <th>Status</th>
-        </tr>
-
-        <tr>
-            <td>Line A</td>
-            <td id="a">3200</td>
-            <td><span class="ok">OK</span></td>
-        </tr>
-
-        <tr>
-            <td>Line B</td>
-            <td id="b">2900</td>
-            <td><span class="warn">MONITOR</span></td>
-        </tr>
-
-        <tr>
-            <td>Line C</td>
-            <td id="c">2100</td>
-            <td><span class="ok">OK</span></td>
-        </tr>
-
-    </table>
+    <div class="card">
+        <h3>Material Used</h3>
+        <h2 id="material">{{ material_used }}</h2>
+    </div>
 
 </div>
 
-<!-- COMMAND PANEL -->
-<div class="panel">
-
-    <h3>🖥 Command System Status</h3>
-
-    <p>All systems synchronized. IoT sensor stream active. Factory operating under normal conditions.</p>
-
+<!-- CHART -->
+<div class="card chart-box" style="margin-top:15px;">
+    <h3>Production Trend</h3>
+    <canvas id="chart"></canvas>
 </div>
 
+<!-- REAL-TIME SCRIPT -->
 <script>
 
-// CLOCK
-function updateClock(){
-    const now = new Date();
-    document.getElementById("clock").innerText = now.toLocaleString();
+async function fetchData() {
+    const params = new URLSearchParams(new FormData(document.getElementById("filterForm")));
+
+    const res = await fetch("/dashboard/live/?"+params.toString());
+    const data = await res.json();
+
+    document.getElementById("temp").innerText = data.temperature;
+    document.getElementById("hum").innerText = data.humidity;
+    document.getElementById("pres").innerText = data.pressure;
+
+    document.getElementById("yield").innerText = data.total_yield;
+    document.getElementById("output").innerText = data.production_output;
+    document.getElementById("material").innerText = data.material_used;
 }
-setInterval(updateClock,1000);
-updateClock();
 
-// REAL-TIME SIMULATION (replace later with API/WebSocket)
-setInterval(() => {
-
-    let output = document.getElementById("output");
-    let eff = document.getElementById("efficiency");
-
-    let val = parseInt(output.innerText.replace(",",""));
-    val += Math.floor(Math.random()*20 - 5);
-
-    output.innerText = val.toLocaleString();
-
-    let e = (95 + Math.random()*3).toFixed(1);
-    eff.innerText = e + "%";
-
-    // line updates
-    document.getElementById("a").innerText = 3200 + Math.floor(Math.random()*20);
-    document.getElementById("b").innerText = 2900 + Math.floor(Math.random()*30);
-    document.getElementById("c").innerText = 2100 + Math.floor(Math.random()*15);
-
-    // random alert trigger
-    if(Math.random() > 0.85){
-        document.getElementById("alertBox").style.display = "block";
-        setTimeout(()=>{
-            document.getElementById("alertBox").style.display = "none";
-        },3000);
-    }
-
-}, 2000);
+/* auto refresh every 2.5 seconds */
+setInterval(fetchData, 2500);
+fetchData();
 
 </script>
 

@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from django.db.models import Sum, Avg
 
-
+from django.http import JsonResponse
 @login_required
 @allowed_roles(['manager', 'executive'])
 def dashboard(request):
@@ -94,3 +94,23 @@ def materials_view(request):
 
 def sensors_view(request):
     return render(request, "sensors/sensors.html")
+
+def dashboard_live(request):
+
+    line = request.GET.get("line")
+
+    data = {
+        "temperature": 27,
+        "humidity": 60,
+        "pressure": 101,
+        "total_yield": 1200,
+        "production_output": 950,
+        "material_used": 400
+    }
+
+    if line == "line1":
+        data["production_output"] = 1300
+    elif line == "line2":
+        data["production_output"] = 900
+
+    return JsonResponse(data)
