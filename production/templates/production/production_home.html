@@ -1,9 +1,176 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Production Dashboard</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+            padding:20px;
+        }
+
+        .header{
+            background:#1f2937;
+            color:white;
+            padding:20px;
+            border-radius:10px;
+            margin-bottom:20px;
+            box-shadow:0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .header h1{
+            font-size:28px;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+            gap:20px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:12px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        .card h2{
+            color:#374151;
+            margin-bottom:10px;
+        }
+
+        .value{
+            font-size:32px;
+            font-weight:bold;
+            color:#2563eb;
+        }
+
+        .table-container{
+            margin-top:25px;
+            background:white;
+            padding:20px;
+            border-radius:12px;
+            box-shadow:0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        table th{
+            background:#1f2937;
+            color:white;
+            padding:12px;
+        }
+
+        table td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:center;
+        }
+
+        .status{
+            padding:5px 10px;
+            border-radius:20px;
+            color:white;
+            font-size:12px;
+        }
+
+        .running{
+            background:#16a34a;
+        }
+
+        .pending{
+            background:#f59e0b;
+        }
+
+        .stopped{
+            background:#dc2626;
+        }
+    </style>
 </head>
 <body>
-    <h1>Production Dashboard</h1>
+
+    <div class="header">
+        <h1>🏭 Production Dashboard</h1>
+        <p>Manufacturing Production Monitoring System</p>
+    </div>
+
+    <div class="cards">
+        <div class="card">
+            <h2>Total Production</h2>
+            <div class="value">1,250</div>
+        </div>
+
+        <div class="card">
+            <h2>Completed Orders</h2>
+            <div class="value">980</div>
+        </div>
+
+        <div class="card">
+            <h2>Pending Orders</h2>
+            <div class="value">270</div>
+        </div>
+
+        <div class="card">
+            <h2>Production Efficiency</h2>
+            <div class="value">92%</div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <h2 style="margin-bottom:15px;">Production Status</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Production Line</th>
+                    <th>Product</th>
+                    <th>Output</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Line A</td>
+                    <td>Product X</td>
+                    <td>500</td>
+                    <td><span class="status running">Running</span></td>
+                </tr>
+
+                <tr>
+                    <td>Line B</td>
+                    <td>Product Y</td>
+                    <td>320</td>
+                    <td><span class="status pending">Pending</span></td>
+                </tr>
+
+                <tr>
+                    <td>Line C</td>
+                    <td>Product Z</td>
+                    <td>430</td>
+                    <td><span class="status running">Running</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </body>
 </html>
