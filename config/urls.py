@@ -5,6 +5,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -22,4 +23,5 @@ urlpatterns = [
     path('', auth_views.LoginView.as_view(
         template_name='registration/login.html'
     )),
+    path('logout/', LogoutView.as_view(), name='logout'),
 ]
