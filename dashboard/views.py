@@ -65,6 +65,10 @@ def dashboard(request):
             'role': role,
             'chart_labels': chart_labels,
             'chart_data': chart_data,
+             "total_yield": 1200,
+        "production_count": 45,
+        "materials_used": 300,
+        "efficiency": 87
         }
     )
 

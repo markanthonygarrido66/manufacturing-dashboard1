@@ -1,16 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manufacturing Dashboard</title>
+    <title>Manufacturing Command Dashboard</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            background: #0b1220;
+            color: white;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            background: #111827;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .topbar h2 {
+            margin: 0;
+        }
+
+        /* SIDEBAR */
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #111827;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 10px;
+            text-decoration: none;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background: #1f2937;
+        }
+
+        /* MAIN CONTENT */
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        /* CARDS */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: #1f2937;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: #9ca3af;
+        }
+
+        .card p {
+            font-size: 22px;
+            margin-top: 10px;
+        }
+
+        /* FILTER BOX */
+        .filters {
+            margin: 20px 0;
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        select, input {
+            padding: 8px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 8px 15px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
 </head>
+
 <body>
 
-<header>
-    <h1>Manufacturing Yield Dashboard</h1>
-</header>
+<div class="topbar">
+    <h2>🏭 Manufacturing Command Center</h2>
 
-{% block content %}
-{% endblock %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" style="background:red;">Logout</button>
+    </form>
+</div>
+
+<div class="container">
+
+    <div class="sidebar">
+        <a href="/dashboard/">📊 Dashboard</a>
+        <a href="#">📦 Production</a>
+        <a href="#">🧾 Materials</a>
+        <a href="#">📡 Sensors</a>
+    </div>
+
+    <div class="main">
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
 
 </body>
 </html>
