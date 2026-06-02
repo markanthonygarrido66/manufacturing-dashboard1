@@ -6,8 +6,9 @@ from pathlib import Path
 import os
 import dj_database_url
 import cloudinary
-
+import logging
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 
 # =========================
@@ -15,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # =========================
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-insecure-key-change-me")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = True
 
 ALLOWED_HOSTS = [
     ".onrender.com",
@@ -228,3 +229,17 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
 X_FRAME_OPTIONS = "DENY"
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'ERROR',
+    },
+}
