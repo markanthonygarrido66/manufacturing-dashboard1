@@ -4,8 +4,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-/* ===== CONTROL ROOM DASHBOARD ===== */
-
 .header {
     background: linear-gradient(135deg,#0f172a,#1e3a8a);
     color: white;
@@ -14,60 +12,58 @@
     margin-bottom: 20px;
 }
 
-.header h2 { margin: 0; }
-.header small { opacity: 0.8; }
-
 .filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
 }
 
-.filters select,
-.filters input {
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+.filters select, .filters input {
+    padding:10px;
+    border-radius:8px;
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
-    gap: 15px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
 }
 
 .card {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    text-align: center;
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
 }
 
 .value {
-    font-size: 28px;
-    font-weight: bold;
-    color: #2563eb;
+    font-size:28px;
+    font-weight:bold;
+    color:#2563eb;
 }
 
-.live {
-    color: #22c55e;
-    font-weight: bold;
+.live { color:green; }
+
+.chart-box {
+    margin-top:20px;
+    background:white;
+    padding:20px;
+    border-radius:12px;
 }
 </style>
 
 <div class="header">
     <h2>🏭 Manufacturing Command Room</h2>
-    <small>Real-time production monitoring system</small>
+    <small>Real-time Factory Monitoring System</small>
 </div>
 
 <!-- FILTERS -->
-<form method="GET" id="filterForm">
+<form id="filterForm">
 <div class="filters">
 
-    <select name="line" onchange="document.getElementById('filterForm').submit()">
-        <option value="">All Production Lines</option>
+    <select name="line" onchange="this.form.submit()">
+        <option value="">All Lines</option>
         <option value="line1">Line 1</option>
         <option value="line2">Line 2</option>
         <option value="line3">Line 3</option>
@@ -79,85 +75,83 @@
 </div>
 </form>
 
-<!-- KPI CARDS -->
+<!-- KPI -->
 <div class="grid">
 
     <div class="card">
-        <h4>📦 Yield Output</h4>
-        <div class="value" id="yield">{{ total_yield|default:0 }}</div>
+        <h4>Yield Output</h4>
+        <div class="value" id="yield">{{ total_yield }}</div>
     </div>
 
     <div class="card">
-        <h4>🧱 Avg Yield</h4>
-        <div class="value" id="material">{{ avg_yield|default:0 }}</div>
+        <h4>Avg Yield</h4>
+        <div class="value" id="avg">{{ avg_yield }}</div>
     </div>
 
     <div class="card">
-        <h4>🏭 Production Count</h4>
-        <div class="value" id="rate">{{ production_count|default:0 }}</div>
+        <h4>Production Count</h4>
+        <div class="value" id="count">{{ production_count }}</div>
     </div>
 
     <div class="card">
-        <h4>⚡ System Status</h4>
+        <h4>Status</h4>
         <div class="value live">LIVE</div>
     </div>
 
 </div>
 
 <!-- CHART -->
-<div class="card" style="margin-top:20px;">
-    <h4>📊 Live Production Trend</h4>
+<div class="chart-box">
+    <h3>Production Trend</h3>
     <canvas id="chart"></canvas>
 </div>
 
-{{ chart_labels_json|json_script:"labels-data" }}
-{{ chart_data_json|json_script:"data-data" }}
+<!-- SAFE JSON -->
+{{ chart_labels|json_script:"labels-data" }}
+{{ chart_data|json_script:"data-data" }}
 
 <script>
 const labels = JSON.parse(document.getElementById("labels-data").textContent);
-const data = JSON.parse(document.getElementById("data-data").textContent);
+const values = JSON.parse(document.getElementById("data-data").textContent);
 
 const ctx = document.getElementById('chart');
 
-new Chart(ctx, {
+const chart = new Chart(ctx, {
     type: 'line',
     data: {
         labels: labels,
         datasets: [{
-            label: "Yield Trend",
-            data: data,
-            borderWidth: 2,
-            fill: false
+            label: "Yield",
+            data: values,
+            borderWidth: 2
         }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
     }
 });
 
-/* ===== REAL-TIME UPDATE (NO FULL RELOAD) ===== */
-   setInterval(() => {
-    fetch("{% url 'dashboard_live' %}?line=" + document.querySelector("[name='line']").value)
-        .then(res => res.json())
-        .then(data => {
+/* REAL TIME UPDATE (NO WHITE SCREEN) */
+setInterval(() => {
+    const line = document.querySelector("[name='line']").value;
 
-            // update KPI
-            document.getElementById("yield").innerText = data.total_yield;
-            document.getElementById("material").innerText = data.material_used;
-            document.getElementById("rate").innerText = data.production_output;
+    fetch(`/dashboard/live/?line=${line}`)
+    .then(res => res.json())
+    .then(data => {
 
-            // update chart last point
-            chart.data.labels.push("Live");
-            chart.data.datasets[0].data.push(data.production_output);
+        document.getElementById("yield").innerText = data.total_yield;
+        document.getElementById("avg").innerText = data.production_output;
+        document.getElementById("count").innerText = data.material_used;
 
-            if (chart.data.labels.length > 10) {
-                chart.data.labels.shift();
-                chart.data.datasets[0].data.shift();
-            }
+        // safe chart update
+        chart.data.labels.push("Live");
+        chart.data.datasets[0].data.push(data.production_output);
 
-            chart.update();
-        });
+        if (chart.data.labels.length > 10) {
+            chart.data.labels.shift();
+            chart.data.datasets[0].data.shift();
+        }
+
+        chart.update();
+    });
+
 }, 3000);
 
 </script>

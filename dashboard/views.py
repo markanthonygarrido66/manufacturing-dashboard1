@@ -74,7 +74,7 @@ def push_yield(request):
 # LIVE API (AJAX / IoT READY)
 # =========================
 def dashboard_live(request):
-
+    
     line = request.GET.get("line")
 
     records = YieldRecord.objects.all()
@@ -89,4 +89,8 @@ def dashboard_live(request):
         "material_used": 400  # placeholder (pwede mo palitan later)
     }
 
-    return JsonResponse(data)
+    return JsonResponse({
+        "total_yield": 1200,
+        "production_output": 950,
+        "material_used": 400
+    })
