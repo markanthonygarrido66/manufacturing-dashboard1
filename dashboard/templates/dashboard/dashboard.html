@@ -135,9 +135,9 @@ new Chart(ctx, {
         maintainAspectRatio: false
     }
 });
-</script>
+
 /* ===== REAL-TIME UPDATE (NO FULL RELOAD) ===== */
-setInterval(() => {
+   setInterval(() => {
     fetch("{% url 'dashboard_live' %}?line=" + document.querySelector("[name='line']").value)
         .then(res => res.json())
         .then(data => {
