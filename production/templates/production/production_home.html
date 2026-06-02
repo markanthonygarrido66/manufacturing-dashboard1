@@ -1,54 +1,184 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-<div class="dashboard-header">
-    <h2>⚙️ Production Dashboard</h2>
-    <p>Monitor Production Performance</p>
+<style>
+
+/* =========================
+   MODERN PRODUCTION PAGE
+========================= */
+
+body {
+    background: #0b1220;
+}
+
+/* HEADER */
+.header {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.header small {
+    opacity: 0.7;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+/* CARD */
+.card {
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border: 1px solid #1f2937;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: 0.3s ease;
+    color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+/* VALUE */
+.value {
+    font-size: 30px;
+    font-weight: bold;
+    color: #38bdf8;
+}
+
+/* LABEL */
+.label {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+/* STATUS */
+.status {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.online {
+    background: #22c55e;
+    color: white;
+}
+
+.offline {
+    background: #ef4444;
+    color: white;
+}
+
+/* PANEL */
+.panel {
+    margin-top: 20px;
+    background: #0f172a;
+    border: 1px solid #1f2937;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+.panel h3 {
+    color: #cbd5e1;
+    margin-bottom: 15px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+}
+
+th {
+    background: #111827;
+    padding: 12px;
+    text-align: left;
+    color: #94a3b8;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #1f2937;
+}
+
+</style>
+
+<!-- HEADER -->
+<div class="header">
+    <h2>🏭 Production Control Room</h2>
+    <small>Real-time production monitoring & management</small>
 </div>
 
-<div class="sensor-grid">
+<!-- PRODUCTION GRID -->
+<div class="grid">
 
-    <div class="sensor-card">
-        <div class="sensor-icon">🏭</div>
-        <div class="sensor-title">Today's Output</div>
-        <div class="sensor-value">125</div>
-        <div class="sensor-unit">Units</div>
+    <div class="card">
+        <div class="label">Total Output</div>
+        <div class="value">{{ total_output|default:0 }}</div>
+        <div class="status online">ACTIVE</div>
     </div>
 
-    <div class="sensor-card">
-        <div class="sensor-icon">👨‍🏭</div>
-        <div class="sensor-title">Workers</div>
-        <div class="sensor-value">18</div>
-        <div class="sensor-unit">Active</div>
+    <div class="card">
+        <div class="label">Daily Production</div>
+        <div class="value">{{ daily_production|default:0 }}</div>
+        <div class="status online">RUNNING</div>
     </div>
 
-    <div class="sensor-card">
-        <div class="sensor-icon">📈</div>
-        <div class="sensor-title">Efficiency</div>
-        <div class="sensor-value">95%</div>
+    <div class="card">
+        <div class="label">Efficiency Rate</div>
+        <div class="value">{{ efficiency|default:0 }}%</div>
+        <div class="status online">OPTIMAL</div>
+    </div>
+
+    <div class="card">
+        <div class="label">Machine Status</div>
+        <div class="value">LIVE</div>
+        <div class="status online">ALL SYSTEMS</div>
     </div>
 
 </div>
 
+<!-- PRODUCTION TABLE -->
 <div class="panel">
-    <h3 class="panel-title">📋 Production Status</h3>
+    <h3>📋 Production Records</h3>
 
     <table>
-        <tr>
-            <th>Line</th>
-            <th>Status</th>
-        </tr>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Line</th>
+                <th>Output</th>
+                <th>Status</th>
+            </tr>
+        </thead>
 
-        <tr>
-            <td>Production Line A</td>
-            <td><span class="status-online">RUNNING</span></td>
-        </tr>
-
-        <tr>
-            <td>Production Line B</td>
-            <td><span class="status-online">RUNNING</span></td>
-        </tr>
+        <tbody>
+            {% for r in records %}
+            <tr>
+                <td>{{ r.production_date }}</td>
+                <td>{{ r.production_line }}</td>
+                <td>{{ r.output }}</td>
+                <td><span class="status online">COMPLETED</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
