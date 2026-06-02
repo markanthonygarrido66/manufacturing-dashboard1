@@ -3,12 +3,10 @@ from django.http import JsonResponse
 from .models import ProductionRecord
 import random
 
+
 def production_home(request):
     return render(request, 'production/production_home.html')
 
-from django.http import JsonResponse
-from .models import ProductionRecord
-import random
 
 def production_live(request):
 
