@@ -12,4 +12,9 @@ urlpatterns = [
     name="dashboard_live"
 ),
     path('api/push-yield/', views.push_yield, name='push_yield'),
+    path(
+    'chart-live/',
+    views.dashboard_chart_live,
+    name='dashboard_chart_live'
+),
 ]

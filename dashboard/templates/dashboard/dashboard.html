@@ -215,6 +215,24 @@ setInterval(() => {
     });
 
 }, 5000);
+function updateChart(){
+
+    fetch("/dashboard/chart-live/")
+    .then(res => res.json())
+    .then(data => {
+
+        chart.data.labels = data.labels;
+
+        chart.data.datasets[0].data = data.data;
+
+        chart.update();
+
+    });
+
+}
+
+setInterval(updateChart, 5000);
 </script>
+
 
 {% endblock %}

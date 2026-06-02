@@ -10,6 +10,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 import random
+from django.http import JsonResponse
+from dashboard.models import YieldRecord
 # =========================
 # MAIN DASHBOARD VIEW
 # =========================
@@ -80,4 +82,23 @@ def dashboard_live(request):
         "total_yield": 1825 + random.randint(-50,50),
         "avg_yield": 91 + random.uniform(-2,2),
         "production_count": 20 + random.randint(0,5)
+    })
+
+def dashboard_chart_live(request):
+
+    records = YieldRecord.objects.order_by('production_date')
+
+    labels = []
+    data = []
+
+    for r in records:
+        labels.append(str(r.production_date))
+        data.append(
+    float(r.yield_percentage) +
+    random.uniform(-1,1)
+)
+
+    return JsonResponse({
+        "labels": labels,
+        "data": data
     })
