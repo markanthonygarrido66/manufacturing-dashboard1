@@ -164,32 +164,34 @@ td {
     <table>
         <thead>
             <tr>
-                <th>Date</th>
                 <th>Line</th>
                 <th>Output</th>
-                <th>Status</th>
+                <th>Date</th>
             </tr>
         </thead>
 
-        <tbody>
+        <tbody id="production-body">
+
             {% for r in records %}
             <tr>
-                <td>{{ r.production_date }}</td>
                 <td>{{ r.production_line }}</td>
                 <td>{{ r.output }}</td>
-                <td><span class="status online">COMPLETED</span></td>
+                <td>{{ r.production_date }}</td>
             </tr>
             {% endfor %}
+
         </tbody>
+
     </table>
 </div>
-
 /* LIVE UPDATE */
 
-setInterval(() => {
+<script>
+
+function loadProduction(){
 
     fetch("/production/live/")
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
 
         let rows = "";
@@ -201,15 +203,19 @@ setInterval(() => {
                 <td>${item.line}</td>
                 <td>${item.output}</td>
                 <td>${item.date}</td>
-            </tr>`;
+            </tr>
+            `;
         });
 
-        document.getElementById(
-            "production-body"
-        ).innerHTML = rows;
-
+        document.getElementById("production-body").innerHTML = rows;
     });
 
-}, 5000);
+}
+
+loadProduction();
+
+setInterval(loadProduction, 5000);
+
+</script>
 
 {% endblock %}
