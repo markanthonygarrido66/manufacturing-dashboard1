@@ -3,59 +3,163 @@
 {% block content %}
 
 <div class="dashboard-header">
-    <h2>🏭 Manufacturing Dashboard</h2>
-    <p>Overall Manufacturing Operations Overview</p>
+    <h2>🏭 Manufacturing Yield & Command Room Dashboard</h2>
+    <p>Real-Time Factory Operations Monitoring Center</p>
 </div>
+
+<!-- FILTERS -->
+
+<div class="panel">
+
+```
+<h3 class="panel-title">🔎 Production Filters</h3>
+
+<form method="GET">
+
+    <div class="sensor-grid">
+
+        <div>
+            <label>Production Line</label>
+
+            <select name="line" onchange="this.form.submit()">
+                <option value="">All Lines</option>
+                <option value="Line A">Line A</option>
+                <option value="Line B">Line B</option>
+                <option value="Line C">Line C</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Start Date</label>
+            <input type="date" name="start_date"
+                   onchange="this.form.submit()">
+        </div>
+
+        <div>
+            <label>End Date</label>
+            <input type="date" name="end_date"
+                   onchange="this.form.submit()">
+        </div>
+
+    </div>
+
+</form>
+```
+
+</div>
+
+<!-- KPI CARDS -->
 
 <div class="sensor-grid">
 
-    <div class="sensor-card">
-        <div class="sensor-icon">📦</div>
-        <div class="sensor-title">Materials</div>
-        <div class="sensor-value">250</div>
-        <div class="sensor-unit">Available</div>
-    </div>
+```
+<div class="sensor-card">
+    <div class="sensor-icon">📈</div>
+    <div class="sensor-title">Accumulated Yield</div>
+    <div class="sensor-value">98.5%</div>
+</div>
 
-    <div class="sensor-card">
-        <div class="sensor-icon">⚙️</div>
-        <div class="sensor-title">Production</div>
-        <div class="sensor-value">125</div>
-        <div class="sensor-unit">Units Today</div>
-    </div>
+<div class="sensor-card">
+    <div class="sensor-icon">🏭</div>
+    <div class="sensor-title">Units Produced</div>
+    <div class="sensor-value">12,500</div>
+</div>
 
-    <div class="sensor-card">
-        <div class="sensor-icon">📡</div>
-        <div class="sensor-title">Sensors</div>
-        <div class="sensor-value">3</div>
-        <div class="sensor-unit">Active</div>
-    </div>
+<div class="sensor-card">
+    <div class="sensor-icon">📦</div>
+    <div class="sensor-title">Material Purchases</div>
+    <div class="sensor-value">₱850K</div>
+</div>
+
+<div class="sensor-card">
+    <div class="sensor-icon">⚙️</div>
+    <div class="sensor-title">Active Production Lines</div>
+    <div class="sensor-value">3</div>
+</div>
+```
 
 </div>
 
-<div class="panel">
-    <h3 class="panel-title">📊 System Overview</h3>
+<!-- COMMAND ROOM STATUS -->
 
-    <table>
+<div class="panel">
+
+```
+<h3 class="panel-title">🎯 Command Room Status</h3>
+
+<table>
+
+    <thead>
         <tr>
-            <th>Module</th>
+            <th>Production Line</th>
+            <th>Output</th>
+            <th>Yield</th>
             <th>Status</th>
         </tr>
+    </thead>
+
+    <tbody>
 
         <tr>
-            <td>Materials</td>
-            <td><span class="status-online">ONLINE</span></td>
+            <td>Line A</td>
+            <td>4,500 Units</td>
+            <td>98.2%</td>
+            <td>
+                <span class="status-online">RUNNING</span>
+            </td>
         </tr>
 
         <tr>
-            <td>Production</td>
-            <td><span class="status-online">ONLINE</span></td>
+            <td>Line B</td>
+            <td>3,900 Units</td>
+            <td>97.8%</td>
+            <td>
+                <span class="status-online">RUNNING</span>
+            </td>
         </tr>
 
         <tr>
-            <td>Sensors</td>
-            <td><span class="status-online">ONLINE</span></td>
+            <td>Line C</td>
+            <td>4,100 Units</td>
+            <td>99.1%</td>
+            <td>
+                <span class="status-online">RUNNING</span>
+            </td>
         </tr>
-    </table>
+
+    </tbody>
+
+</table>
+```
+
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+
+<div class="summary-grid">
+
+```
+<div class="summary-box">
+    <h4>Total Revenue</h4>
+    <p>₱2.5M</p>
+</div>
+
+<div class="summary-box">
+    <h4>Production Efficiency</h4>
+    <p>96%</p>
+</div>
+
+<div class="summary-box">
+    <h4>Material Utilization</h4>
+    <p>92%</p>
+</div>
+
+<div class="summary-box">
+    <h4>Factory Status</h4>
+    <p>ONLINE</p>
+</div>
+```
+
 </div>
 
 {% endblock %}
