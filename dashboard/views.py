@@ -54,25 +54,8 @@ def dashboard(request):
     if hasattr(request.user, 'userprofile'):
         role = request.user.userprofile.role
 
-    return render(
-        request,
-        'dashboard/dashboard.html',
-        {
-            'production_lines': production_lines,
-            'records': records,
-            'total_yield': total_yield,
-            'avg_yield': avg_yield,
-            'role': role,
-            'chart_labels': chart_labels,
-            'chart_data': chart_data,
-             "total_yield": 1200,
-        "production_count": 45,
-        "materials_used": 300,
-        "efficiency": 87
-        }
-    )
-
-
+def dashboard(request):
+    return render(request, "dashboard/dashboard.html")
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def push_yield(request):
