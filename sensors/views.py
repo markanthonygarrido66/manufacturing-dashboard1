@@ -11,7 +11,7 @@ from .models import SensorData
 # =========================
 # SENSOR DASHBOARD UI
 # =========================
-@login_required
+@login_required(login_url='/login/')
 def sensor_dashboard(request):
     context = {
         "temperature": 28,

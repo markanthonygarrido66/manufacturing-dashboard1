@@ -16,11 +16,9 @@ class YieldRecord(models.Model):
 
     production_date = models.DateField()
 
-    total_units = models.IntegerField()
-
-    good_units = models.IntegerField()
-
-    defective_units = models.IntegerField()
+    total_units = models.IntegerField(default=0)
+    good_units = models.IntegerField(default=0)
+    defective_units = models.IntegerField(default=0)
 
     yield_percentage = models.FloatField()
 
