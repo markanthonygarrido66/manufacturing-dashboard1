@@ -2,11 +2,25 @@
 
 {% block content %}
 
-<h2>📡 Sensor Monitoring</h2>
+<h2>📡 Sensors Dashboard</h2>
 
-<div class="card">
-    <h3>Live Sensor Status</h3>
-    <p>Sensor module is active.</p>
+<div class="grid grid-3">
+
+    <div class="card">
+        <h3>🌡 Temperature</h3>
+        <h2>{{ temperature }} °C</h2>
+    </div>
+
+    <div class="card">
+        <h3>💧 Humidity</h3>
+        <h2>{{ humidity }} %</h2>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Pressure</h3>
+        <h2>{{ pressure }} kPa</h2>
+    </div>
+
 </div>
 
 {% endblock %}
