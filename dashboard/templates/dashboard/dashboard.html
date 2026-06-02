@@ -4,58 +4,120 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+
+/* =========================
+   MODERN CONTROL ROOM UI
+========================= */
+
+body {
+    background: #0b1220;
+}
+
+/* HEADER */
 .header {
-    background: linear-gradient(135deg,#0f172a,#1e3a8a);
+    background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
-    padding: 20px;
-    border-radius: 12px;
+    padding: 25px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.header h2 {
+    margin: 0;
+    font-size: 26px;
+    letter-spacing: 0.5px;
+}
+
+.header small {
+    opacity: 0.7;
+}
+
+/* FILTERS */
+.filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
     margin-bottom: 20px;
 }
 
-.filters {
-    display:flex;
-    gap:10px;
-    margin-bottom:20px;
+.filters select,
+.filters input {
+    background: #111827;
+    color: white;
+    border: 1px solid #2d3748;
+    padding: 10px 12px;
+    border-radius: 10px;
+    outline: none;
 }
 
-.filters select, .filters input {
-    padding:10px;
-    border-radius:8px;
-}
-
+/* GRID */
 .grid {
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-    gap:15px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
 }
 
+/* CARDS */
 .card {
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.08);
-    text-align:center;
+    background: linear-gradient(145deg, #111827, #0f172a);
+    border: 1px solid #1f2937;
+    padding: 20px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+    transition: 0.3s ease;
 }
 
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+}
+
+.card h4 {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+/* VALUE TEXT */
 .value {
-    font-size:28px;
-    font-weight:bold;
-    color:#2563eb;
+    font-size: 30px;
+    font-weight: 700;
+    color: #38bdf8;
 }
 
-.live { color:green; }
+/* LIVE STATUS */
+.live {
+    color: #22c55e;
+    font-weight: bold;
+}
 
+/* CHART AREA */
 .chart-box {
-    margin-top:20px;
-    background:white;
-    padding:20px;
-    border-radius:12px;
+    margin-top: 20px;
+    background: #0f172a;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #1f2937;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
 }
+
+.chart-box h3 {
+    color: #cbd5e1;
+    margin-bottom: 15px;
+}
+
+canvas {
+    height: 320px !important;
+}
+
 </style>
 
+<!-- HEADER -->
 <div class="header">
     <h2>🏭 Manufacturing Command Room</h2>
-    <small>Real-time Factory Monitoring System</small>
+    <small>Real-time Production Monitoring System</small>
 </div>
 
 <!-- FILTERS -->
@@ -63,7 +125,7 @@
 <div class="filters">
 
     <select name="line" onchange="this.form.submit()">
-        <option value="">All Lines</option>
+        <option value="">All Production Lines</option>
         <option value="line1">Line 1</option>
         <option value="line2">Line 2</option>
         <option value="line3">Line 3</option>
@@ -75,26 +137,26 @@
 </div>
 </form>
 
-<!-- KPI -->
+<!-- KPI GRID -->
 <div class="grid">
 
     <div class="card">
-        <h4>Yield Output</h4>
+        <h4>📦 Yield Output</h4>
         <div class="value" id="yield">{{ total_yield }}</div>
     </div>
 
     <div class="card">
-        <h4>Avg Yield</h4>
+        <h4>🧱 Avg Yield</h4>
         <div class="value" id="avg">{{ avg_yield }}</div>
     </div>
 
     <div class="card">
-        <h4>Production Count</h4>
+        <h4>🏭 Production Count</h4>
         <div class="value" id="count">{{ production_count }}</div>
     </div>
 
     <div class="card">
-        <h4>Status</h4>
+        <h4>⚡ System Status</h4>
         <div class="value live">LIVE</div>
     </div>
 
@@ -102,11 +164,11 @@
 
 <!-- CHART -->
 <div class="chart-box">
-    <h3>Production Trend</h3>
+    <h3>📊 Live Production Trend</h3>
     <canvas id="chart"></canvas>
 </div>
 
-<!-- SAFE JSON -->
+<!-- JSON SAFE DATA -->
 {{ chart_labels|json_script:"labels-data" }}
 {{ chart_data|json_script:"data-data" }}
 
@@ -121,15 +183,22 @@ const chart = new Chart(ctx, {
     data: {
         labels: labels,
         datasets: [{
-            label: "Yield",
+            label: "Yield Trend",
             data: values,
-            borderWidth: 2
+            borderWidth: 2,
+            borderColor: "#38bdf8",
+            tension: 0.4
         }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
     }
 });
 
-/* REAL TIME UPDATE (NO WHITE SCREEN) */
+/* LIVE UPDATE */
 setInterval(() => {
+
     const line = document.querySelector("[name='line']").value;
 
     fetch(`/dashboard/live/?line=${line}`)
@@ -140,7 +209,6 @@ setInterval(() => {
         document.getElementById("avg").innerText = data.production_output;
         document.getElementById("count").innerText = data.material_used;
 
-        // safe chart update
         chart.data.labels.push("Live");
         chart.data.datasets[0].data.push(data.production_output);
 
