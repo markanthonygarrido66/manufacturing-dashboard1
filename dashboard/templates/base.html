@@ -1,106 +1,117 @@
-
-
 <!DOCTYPE html>
-
 <html>
 <head>
-    <title>Manufacturing Command Dashboard</title>
+    <title>Manufacturing Command Center</title>
 
     <style>
         body {
             margin: 0;
-            font-family: Arial;
+            font-family: 'Segoe UI', sans-serif;
             background: #0b1220;
-            color: white;
+            color: #e5e7eb;
         }
 
-        /* TOP BAR */
+        /* TOPBAR */
         .topbar {
-            background: #111827;
-            padding: 15px 20px;
+            height: 60px;
+            background: #0f172a;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .topbar h2 {
-            margin: 0;
+            padding: 0 20px;
+            border-bottom: 1px solid #1f2937;
         }
 
         /* SIDEBAR */
-        .container {
-            display: flex;
-        }
-
         .sidebar {
-            width: 220px;
-            background: #111827;
+            width: 240px;
+            background: #0f172a;
             height: 100vh;
+            position: fixed;
             padding: 20px;
+            border-right: 1px solid #1f2937;
         }
 
         .sidebar a {
             display: block;
-            color: white;
+            color: #cbd5e1;
             padding: 10px;
             text-decoration: none;
-            margin-bottom: 10px;
-            border-radius: 5px;
+            border-radius: 6px;
+            margin-bottom: 8px;
         }
 
         .sidebar a:hover {
-            background: #1f2937;
+            background: #1e293b;
         }
 
-        /* MAIN CONTENT */
+        /* MAIN */
         .main {
-            flex: 1;
+            margin-left: 260px;
             padding: 20px;
         }
 
-        /* CARDS */
-        .cards {
+        /* GRID SYSTEM */
+        .grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
             gap: 15px;
         }
 
+        .grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        /* CARDS */
         .card {
-            background: #1f2937;
-            padding: 20px;
-            border-radius: 10px;
+            background: #111827;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
         }
 
         .card h3 {
             margin: 0;
-            color: #9ca3af;
+            font-size: 14px;
+            color: #94a3b8;
         }
 
-        .card p {
-            font-size: 22px;
+        .card h2 {
             margin-top: 10px;
+            font-size: 26px;
         }
 
-        /* FILTER BOX */
-        .filters {
-            margin: 20px 0;
-            background: #1f2937;
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        select, input {
-            padding: 8px;
-            margin-right: 10px;
-        }
-
-        button {
-            padding: 8px 15px;
+        /* BUTTON */
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
             background: #2563eb;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+
+        /* TABLE */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        th {
+            background: #111827;
+            text-align: left;
         }
 
     </style>
@@ -109,30 +120,20 @@
 <body>
 
 <div class="topbar">
-    <h2>🏭 Manufacturing Command Center</h2>
+    <h3>🏭 Manufacturing Command Center</h3>
 
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit" style="background:red;">Logout</button>
-    </form>
+    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
 </div>
 
-<div class="container">
+<div class="sidebar">
+    <a href="/dashboard/">📊 Dashboard</a>
+    <a href="#">📦 Production</a>
+    <a href="#">🧾 Materials</a>
+    <a href="#">📡 Sensors</a>
+</div>
 
-    <div class="sidebar">
-        <a href="/dashboard/">📊 Dashboard</a>
-        <a href="#">📦 Production</a>
-        <a href="#">🧾 Materials</a>
-        <a href="#">📡 Sensors</a>
-    </div>
-
-    <div class="main">
-
-        {% block content %}
-        {% endblock %}
-
-    </div>
-
+<div class="main">
+    {% block content %}{% endblock %}
 </div>
 
 </body>
