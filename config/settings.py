@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'production',
     'sensors',
     'accounts',
+    'materials',
 ]
 
 

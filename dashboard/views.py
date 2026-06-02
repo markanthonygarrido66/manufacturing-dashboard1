@@ -77,3 +77,16 @@ def push_yield(request):
     return Response({
         "message": "Yield recorded successfully"
     })
+
+
+
+def production_view(request):
+    return render(request, "production/production.html")
+
+
+def materials_view(request):
+    return render(request, "materials/materials.html")
+
+
+def sensors_view(request):
+    return render(request, "sensors/sensors.html")
