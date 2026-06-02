@@ -133,19 +133,25 @@ td {
 
     <div class="card">
         <div class="label">Total Output</div>
-        <div class="value">{{ total_output|default:0 }}</div>
+        <div class="value" id="total_output">
+    {{ total_output|default:0 }}
+</div>
         <div class="status online">ACTIVE</div>
     </div>
 
     <div class="card">
         <div class="label">Daily Production</div>
-        <div class="value">{{ daily_production|default:0 }}</div>
+        <div class="value" id="daily_production">
+    {{ daily_production|default:0 }}
+</div>
         <div class="status online">RUNNING</div>
     </div>
 
     <div class="card">
         <div class="label">Efficiency Rate</div>
-        <div class="value">{{ efficiency|default:0 }}%</div>
+        <div class="value" id="efficiency">
+    {{ efficiency|default:0 }}%
+</div>
         <div class="status online">OPTIMAL</div>
     </div>
 
@@ -187,28 +193,31 @@ td {
 
 
 <script>
-setInterval(() => {
+
+function updateProduction(){
 
     fetch("/production/live/")
-    .then(res => res.json())
+    .then(response => response.json())
     .then(data => {
 
-        let rows = "";
+        document.getElementById(
+            "total_output"
+        ).innerText = data.total_output;
 
-        data.forEach(item => {
-            rows += `
-            <tr>
-                <td>${item.date}</td>
-                <td>${item.line}</td>
-                <td>${item.output}</td>
-            </tr>`;
-        });
+        document.getElementById(
+            "daily_production"
+        ).innerText = data.daily_production;
 
-        document.getElementById("production-body").innerHTML = rows;
+        document.getElementById(
+            "efficiency"
+        ).innerText = data.efficiency + "%";
 
     });
 
-}, 5000);
+}
+
+setInterval(updateProduction, 5000);
+
 </script>
 
 {% endblock %}

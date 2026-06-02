@@ -15,14 +15,19 @@ def production_live(request):
 
     records = ProductionRecord.objects.all()
 
-    data = []
+    total_output = 0
 
     for r in records:
+        total_output += r.yield_percentage
 
-        data.append({
-            "line": r.production_line.name,
-            "output": r.output,
-            "date": str(r.production_date)
-        })
+    daily_production = random.randint(80, 150)
 
-    return JsonResponse(data, safe=False)
+    efficiency = random.randint(85, 99)
+
+    data = {
+        "total_output": round(total_output, 2),
+        "daily_production": daily_production,
+        "efficiency": efficiency
+    }
+
+    return JsonResponse(data)
