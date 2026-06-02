@@ -88,6 +88,21 @@
         <td>{{ record.yield_percentage }}</td>
     </tr>
     {% empty %}
+    {% if records %}
+    {% for r in records %}
+        <tr>
+            <td>{{ r.line }}</td>
+            <td>{{ r.date }}</td>
+            <td>{{ r.yield }}</td>
+        </tr>
+    {% endfor %}
+{% else %}
+    <tr>
+        <td colspan="3" style="text-align:center; padding:20px;">
+            No production records available
+        </td>
+    </tr>
+{% endif %}
     <tr>
         <td colspan="3">No records found</td>
     </tr>
