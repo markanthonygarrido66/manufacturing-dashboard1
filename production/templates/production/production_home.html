@@ -6,7 +6,9 @@
 /* =========================
    MODERN PRODUCTION PAGE
 ========================= */
-
+tr {
+    transition: all 0.3s ease;
+}
 body {
     background: #0b1220;
 }
@@ -154,8 +156,6 @@ td {
     </div>
 
 </div>
-<tbody id="production-body">
-</tbody>
 
 <!-- PRODUCTION TABLE -->
 <div class="panel">
@@ -187,35 +187,28 @@ td {
 
 
 <script>
-
-function loadProduction(){
+setInterval(() => {
 
     fetch("/production/live/")
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
 
         let rows = "";
 
         data.forEach(item => {
-
             rows += `
             <tr>
+                <td>${item.date}</td>
                 <td>${item.line}</td>
                 <td>${item.output}</td>
-                <td>${item.date}</td>
-            </tr>
-            `;
+            </tr>`;
         });
 
         document.getElementById("production-body").innerHTML = rows;
+
     });
 
-}
-
-loadProduction();
-
-setInterval(loadProduction, 5000);
-
+}, 5000);
 </script>
 
 {% endblock %}
