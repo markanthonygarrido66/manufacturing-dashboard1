@@ -200,21 +200,21 @@ const chart = new Chart(ctx, {
 setInterval(() => {
 
     fetch("/dashboard/live/")
-        .then(res => res.json())
-        .then(data => {
+    .then(res => res.json())
+    .then(data => {
 
-            document.getElementById("yield").innerText =
-                data.total_yield.toFixed(2);
+        document.getElementById("yield").innerText =
+            data.total_yield.toFixed(2);
 
-            document.getElementById("material").innerText =
-                data.avg_yield.toFixed(2);
+        document.getElementById("avg").innerText =
+            data.avg_yield.toFixed(2);
 
-            document.getElementById("rate").innerText =
-                data.production_count;
-        });
+        document.getElementById("count").innerText =
+            data.production_count;
+
+    });
 
 }, 5000);
-
 </script>
 
 {% endblock %}
