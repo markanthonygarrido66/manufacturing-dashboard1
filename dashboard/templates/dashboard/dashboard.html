@@ -1,151 +1,61 @@
 {% extends 'base.html' %}
+
 {% block content %}
 
-<h2>📊 Production Overview</h2>
+<div class="dashboard-header">
+    <h2>🏭 Manufacturing Dashboard</h2>
+    <p>Overall Manufacturing Operations Overview</p>
+</div>
 
-<!-- KPI CARDS -->
-<div class="grid grid-4">
+<div class="sensor-grid">
 
-    <div class="card">
-        <h3>Total Yield</h3>
-        <h2>{{ total_yield|default:0 }}</h2>
+    <div class="sensor-card">
+        <div class="sensor-icon">📦</div>
+        <div class="sensor-title">Materials</div>
+        <div class="sensor-value">250</div>
+        <div class="sensor-unit">Available</div>
     </div>
 
-    <div class="card">
-        <h3>Average Yield</h3>
-        <h2>{{ avg_yield|default:0|floatformat:2 }}</h2>
+    <div class="sensor-card">
+        <div class="sensor-icon">⚙️</div>
+        <div class="sensor-title">Production</div>
+        <div class="sensor-value">125</div>
+        <div class="sensor-unit">Units Today</div>
     </div>
 
-    <div class="card">
-        <h3>Production Count</h3>
-        <h2>{{ production_count|default:0 }}</h2>
-    </div>
-
-    <div class="card">
-        <h3>Efficiency</h3>
-        <h2>{{ efficiency|default:0 }}%</h2>
+    <div class="sensor-card">
+        <div class="sensor-icon">📡</div>
+        <div class="sensor-title">Sensors</div>
+        <div class="sensor-value">3</div>
+        <div class="sensor-unit">Active</div>
     </div>
 
 </div>
 
-<br>
+<div class="panel">
+    <h3 class="panel-title">📊 System Overview</h3>
 
-<!-- CHART + FILTER -->
-<div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px;">
+    <table>
+        <tr>
+            <th>Module</th>
+            <th>Status</th>
+        </tr>
 
-    <div class="card">
-        <h3>📈 Yield Trend</h3>
-        <canvas id="yieldChart"></canvas>
-    </div>
+        <tr>
+            <td>Materials</td>
+            <td><span class="status-online">ONLINE</span></td>
+        </tr>
 
-    <div class="card">
-        <h3>🔍 Filters</h3>
+        <tr>
+            <td>Production</td>
+            <td><span class="status-online">ONLINE</span></td>
+        </tr>
 
-        <form method="GET">
-            <select name="line">
-                <option value="">All Lines</option>
-                {% for line in production_lines %}
-                    <option value="{{ line.id }}">
-                        {{ line.name }}
-                    </option>
-                {% endfor %}
-            </select>
-
-            <br><br>
-
-            <input type="date" name="start">
-            <input type="date" name="end">
-
-            <br><br>
-
-            <button type="submit">Apply</button>
-        </form>
-
-    </div>
-
-</div>
-
-<br>
-
-<!-- TABLE -->
-<div class="card">
-    <h3>📦 Production Records</h3>
-
-    <table width="100%" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Line</th>
-                <th>Date</th>
-                <th>Yield %</th>
-            </tr>
-        </thead>
-
-        <tbody>
-        {% for record in records %}
-            <tr>
-                <td>{{ record.production_line }}</td>
-                <td>{{ record.production_date }}</td>
-                <td>{{ record.yield_percentage }}</td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="3" style="text-align:center;">
-                    No records available
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
+        <tr>
+            <td>Sensors</td>
+            <td><span class="status-online">ONLINE</span></td>
+        </tr>
     </table>
 </div>
-
-<!-- SAFE DATA INJECTION (ENTERPRISE FIX) -->
-{{ chart_labels|json_script:"chart-labels" }}
-{{ chart_data|json_script:"chart-data" }}
-
-<!-- CHART -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-
-    const labels = JSON.parse(
-        document.getElementById("chart-labels").textContent
-    );
-
-    const data = JSON.parse(
-        document.getElementById("chart-data").textContent
-    );
-
-    const ctx = document.getElementById("yieldChart");
-
-    new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: labels,
-            datasets: [{
-                label: "Yield %",
-                data: data,
-                borderColor: "#38bdf8",
-                backgroundColor: "rgba(56,189,248,0.2)",
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: { ticks: { color: "white" } },
-                y: { ticks: { color: "white" } }
-            },
-            plugins: {
-                legend: {
-                    labels: { color: "white" }
-                }
-            }
-        }
-    });
-
-});
-</script>
 
 {% endblock %}

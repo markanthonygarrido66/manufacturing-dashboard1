@@ -2,11 +2,64 @@
 
 {% block content %}
 
-<h2>🧾 Materials Management</h2>
+<div class="dashboard-header">
+    <h2>📦 Materials Dashboard</h2>
+    <p>Inventory and Stock Monitoring</p>
+</div>
 
-<div class="card">
-    <h3>Inventory Status</h3>
-    <p>Materials module is working correctly.</p>
+<div class="sensor-grid">
+
+    <div class="sensor-card">
+        <div class="sensor-icon">📦</div>
+        <div class="sensor-title">Raw Materials</div>
+        <div class="sensor-value">250</div>
+        <div class="sensor-unit">Items</div>
+    </div>
+
+    <div class="sensor-card">
+        <div class="sensor-icon">🚚</div>
+        <div class="sensor-title">Deliveries</div>
+        <div class="sensor-value">15</div>
+        <div class="sensor-unit">Today</div>
+    </div>
+
+    <div class="sensor-card">
+        <div class="sensor-icon">⚠️</div>
+        <div class="sensor-title">Low Stock</div>
+        <div class="sensor-value">3</div>
+        <div class="sensor-unit">Items</div>
+    </div>
+
+</div>
+
+<div class="panel">
+    <h3 class="panel-title">📋 Inventory Status</h3>
+
+    <table>
+        <tr>
+            <th>Material</th>
+            <th>Stock</th>
+            <th>Status</th>
+        </tr>
+
+        <tr>
+            <td>Steel</td>
+            <td>500</td>
+            <td><span class="status-online">AVAILABLE</span></td>
+        </tr>
+
+        <tr>
+            <td>Plastic</td>
+            <td>350</td>
+            <td><span class="status-online">AVAILABLE</span></td>
+        </tr>
+
+        <tr>
+            <td>Rubber</td>
+            <td>200</td>
+            <td><span class="status-online">AVAILABLE</span></td>
+        </tr>
+    </table>
 </div>
 
 {% endblock %}
