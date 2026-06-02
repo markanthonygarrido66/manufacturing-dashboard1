@@ -2,163 +2,138 @@
 
 {% block content %}
 
-<div class="dashboard-header">
-    <h2>🏭 Manufacturing Yield & Command Room Dashboard</h2>
-    <p>Real-Time Factory Operations Monitoring Center</p>
+<style>
+
+.banner{
+    background:linear-gradient(135deg,#0f172a,#1e3a8a);
+    color:white;
+    padding:30px;
+    border-radius:16px;
+    margin-bottom:25px;
+}
+
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:20px;
+}
+
+.kpi{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.kpi:hover{
+    transform:translateY(-5px);
+}
+
+.kpi h3{
+    color:#64748b;
+    font-size:14px;
+}
+
+.kpi h2{
+    font-size:28px;
+    color:#0f172a;
+}
+
+.panel{
+    background:white;
+    margin-top:20px;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#0f172a;
+    color:white;
+    padding:12px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    text-align:center;
+}
+
+.status{
+    background:#22c55e;
+    color:white;
+    padding:5px 10px;
+    border-radius:20px;
+}
+
+.warning{
+    background:#f59e0b;
+    color:white;
+}
+
+</style>
+
+<div class="banner">
+    <h1>🏭 Production Control Center</h1>
+    <p>Real-time manufacturing process monitoring</p>
 </div>
 
-<!-- FILTERS -->
+<div class="kpi-grid">
 
-<div class="panel">
-
-```
-<h3 class="panel-title">🔎 Production Filters</h3>
-
-<form method="GET">
-
-    <div class="sensor-grid">
-
-        <div>
-            <label>Production Line</label>
-
-            <select name="line" onchange="this.form.submit()">
-                <option value="">All Lines</option>
-                <option value="Line A">Line A</option>
-                <option value="Line B">Line B</option>
-                <option value="Line C">Line C</option>
-            </select>
-        </div>
-
-        <div>
-            <label>Start Date</label>
-            <input type="date" name="start_date"
-                   onchange="this.form.submit()">
-        </div>
-
-        <div>
-            <label>End Date</label>
-            <input type="date" name="end_date"
-                   onchange="this.form.submit()">
-        </div>
-
+    <div class="kpi">
+        <h3>Total Output</h3>
+        <h2>8,450 Units</h2>
     </div>
 
-</form>
-```
+    <div class="kpi">
+        <h3>Efficiency</h3>
+        <h2>95.6%</h2>
+    </div>
+
+    <div class="kpi">
+        <h3>Active Lines</h3>
+        <h2>6</h2>
+    </div>
 
 </div>
-
-<!-- KPI CARDS -->
-
-<div class="sensor-grid">
-
-```
-<div class="sensor-card">
-    <div class="sensor-icon">📈</div>
-    <div class="sensor-title">Accumulated Yield</div>
-    <div class="sensor-value">98.5%</div>
-</div>
-
-<div class="sensor-card">
-    <div class="sensor-icon">🏭</div>
-    <div class="sensor-title">Units Produced</div>
-    <div class="sensor-value">12,500</div>
-</div>
-
-<div class="sensor-card">
-    <div class="sensor-icon">📦</div>
-    <div class="sensor-title">Material Purchases</div>
-    <div class="sensor-value">₱850K</div>
-</div>
-
-<div class="sensor-card">
-    <div class="sensor-icon">⚙️</div>
-    <div class="sensor-title">Active Production Lines</div>
-    <div class="sensor-value">3</div>
-</div>
-```
-
-</div>
-
-<!-- COMMAND ROOM STATUS -->
 
 <div class="panel">
 
-```
-<h3 class="panel-title">🎯 Command Room Status</h3>
+    <h2>📋 Production Report</h2>
 
-<table>
+    <table>
+        <thead>
+            <tr>
+                <th>Line</th>
+                <th>Output</th>
+                <th>Efficiency</th>
+                <th>Status</th>
+            </tr>
+        </thead>
 
-    <thead>
-        <tr>
-            <th>Production Line</th>
-            <th>Output</th>
-            <th>Yield</th>
-            <th>Status</th>
-        </tr>
-    </thead>
+        <tbody>
+            <tr>
+                <td>Line A</td>
+                <td>2,500</td>
+                <td>97%</td>
+                <td><span class="status">GOOD</span></td>
+            </tr>
 
-    <tbody>
+            <tr>
+                <td>Line B</td>
+                <td>2,100</td>
+                <td>93%</td>
+                <td><span class="warning">CHECK</span></td>
+            </tr>
 
-        <tr>
-            <td>Line A</td>
-            <td>4,500 Units</td>
-            <td>98.2%</td>
-            <td>
-                <span class="status-online">RUNNING</span>
-            </td>
-        </tr>
-
-        <tr>
-            <td>Line B</td>
-            <td>3,900 Units</td>
-            <td>97.8%</td>
-            <td>
-                <span class="status-online">RUNNING</span>
-            </td>
-        </tr>
-
-        <tr>
-            <td>Line C</td>
-            <td>4,100 Units</td>
-            <td>99.1%</td>
-            <td>
-                <span class="status-online">RUNNING</span>
-            </td>
-        </tr>
-
-    </tbody>
-
-</table>
-```
-
-</div>
-
-<!-- EXECUTIVE SUMMARY -->
-
-<div class="summary-grid">
-
-```
-<div class="summary-box">
-    <h4>Total Revenue</h4>
-    <p>₱2.5M</p>
-</div>
-
-<div class="summary-box">
-    <h4>Production Efficiency</h4>
-    <p>96%</p>
-</div>
-
-<div class="summary-box">
-    <h4>Material Utilization</h4>
-    <p>92%</p>
-</div>
-
-<div class="summary-box">
-    <h4>Factory Status</h4>
-    <p>ONLINE</p>
-</div>
-```
+        </tbody>
+    </table>
 
 </div>
 
