@@ -4,162 +4,161 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
+/* ===== CONTROL ROOM DASHBOARD ===== */
 
-/* ===== COMMAND ROOM STYLE ===== */
-.command-room {
-    background: #0b1220;
+.header {
+    background: linear-gradient(135deg,#0f172a,#1e3a8a);
     color: white;
     padding: 20px;
     border-radius: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 15px;
-}
+.header h2 { margin: 0; }
+.header small { opacity: 0.8; }
 
-.card {
-    background: #111a2e;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,.3);
-}
-
-.card h3 {
-    color: #94a3b8;
-    font-size: 14px;
-}
-
-.card h2 {
-    font-size: 26px;
-}
-
-/* FILTER BAR */
 .filters {
     display: flex;
     gap: 10px;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .filters select,
 .filters input {
-    padding: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
-/* STATUS */
-.online {
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    text-align: center;
+}
+
+.value {
+    font-size: 28px;
+    font-weight: bold;
+    color: #2563eb;
+}
+
+.live {
     color: #22c55e;
     font-weight: bold;
 }
-
-.offline {
-    color: #ef4444;
-    font-weight: bold;
-}
-
-.chart-box {
-    height: 320px;
-}
-
 </style>
 
-<!-- HEADER -->
-<div class="command-room">
-    <h2>🏭 Manufacturing Command Center</h2>
-    <p>Real-Time Yield, Production & Material Monitoring System</p>
+<div class="header">
+    <h2>🏭 Manufacturing Command Room</h2>
+    <small>Real-time production monitoring system</small>
 </div>
 
-<!-- FILTERS (AUTO SUBMIT) -->
-<form id="filterForm" class="filters" method="GET">
+<!-- FILTERS -->
+<form method="GET" id="filterForm">
+<div class="filters">
 
-    <select name="line" onchange="this.form.submit()">
-        <option value="">All Lines</option>
+    <select name="line" onchange="document.getElementById('filterForm').submit()">
+        <option value="">All Production Lines</option>
         <option value="line1">Line 1</option>
         <option value="line2">Line 2</option>
         <option value="line3">Line 3</option>
     </select>
 
-    <input type="date" name="from" onchange="this.form.submit()">
-    <input type="date" name="to" onchange="this.form.submit()">
+    <input type="date" name="start" onchange="this.form.submit()">
+    <input type="date" name="end" onchange="this.form.submit()">
 
+</div>
 </form>
 
-<!-- KPI GRID -->
+<!-- KPI CARDS -->
 <div class="grid">
 
     <div class="card">
-        <h3>Temperature</h3>
-        <h2 id="temp">{{ temperature }}</h2>
+        <h4>📦 Yield Output</h4>
+        <div class="value" id="yield">{{ total_yield|default:0 }}</div>
     </div>
 
     <div class="card">
-        <h3>Humidity</h3>
-        <h2 id="hum">{{ humidity }}</h2>
+        <h4>🧱 Avg Yield</h4>
+        <div class="value" id="material">{{ avg_yield|default:0 }}</div>
     </div>
 
     <div class="card">
-        <h3>Pressure</h3>
-        <h2 id="pres">{{ pressure }}</h2>
+        <h4>🏭 Production Count</h4>
+        <div class="value" id="rate">{{ production_count|default:0 }}</div>
     </div>
 
     <div class="card">
-        <h3>System Status</h3>
-        <h2 class="online">ONLINE</h2>
-    </div>
-
-</div>
-
-<div class="grid" style="margin-top:15px;">
-
-    <div class="card">
-        <h3>Total Yield</h3>
-        <h2 id="yield">{{ total_yield }}</h2>
-    </div>
-
-    <div class="card">
-        <h3>Production Output</h3>
-        <h2 id="output">{{ production_output }}</h2>
-    </div>
-
-    <div class="card">
-        <h3>Material Used</h3>
-        <h2 id="material">{{ material_used }}</h2>
+        <h4>⚡ System Status</h4>
+        <div class="value live">LIVE</div>
     </div>
 
 </div>
 
 <!-- CHART -->
-<div class="card chart-box" style="margin-top:15px;">
-    <h3>Production Trend</h3>
+<div class="card" style="margin-top:20px;">
+    <h4>📊 Live Production Trend</h4>
     <canvas id="chart"></canvas>
 </div>
 
-<!-- REAL-TIME SCRIPT -->
+{{ chart_labels_json|json_script:"labels-data" }}
+{{ chart_data_json|json_script:"data-data" }}
+
 <script>
+const labels = JSON.parse(document.getElementById("labels-data").textContent);
+const data = JSON.parse(document.getElementById("data-data").textContent);
 
-async function fetchData() {
-    const params = new URLSearchParams(new FormData(document.getElementById("filterForm")));
+const ctx = document.getElementById('chart');
 
-    const res = await fetch("/dashboard/live/?"+params.toString());
-    const data = await res.json();
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Yield Trend",
+            data: data,
+            borderWidth: 2,
+            fill: false
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+</script>
+/* ===== REAL-TIME UPDATE (NO FULL RELOAD) ===== */
+setInterval(() => {
+    fetch("{% url 'dashboard_live' %}?line=" + document.querySelector("[name='line']").value)
+        .then(res => res.json())
+        .then(data => {
 
-    document.getElementById("temp").innerText = data.temperature;
-    document.getElementById("hum").innerText = data.humidity;
-    document.getElementById("pres").innerText = data.pressure;
+            // update KPI
+            document.getElementById("yield").innerText = data.total_yield;
+            document.getElementById("material").innerText = data.material_used;
+            document.getElementById("rate").innerText = data.production_output;
 
-    document.getElementById("yield").innerText = data.total_yield;
-    document.getElementById("output").innerText = data.production_output;
-    document.getElementById("material").innerText = data.material_used;
-}
+            // update chart last point
+            chart.data.labels.push("Live");
+            chart.data.datasets[0].data.push(data.production_output);
 
-/* auto refresh every 2.5 seconds */
-setInterval(fetchData, 2500);
-fetchData();
+            if (chart.data.labels.length > 10) {
+                chart.data.labels.shift();
+                chart.data.datasets[0].data.shift();
+            }
+
+            chart.update();
+        });
+}, 3000);
 
 </script>
 

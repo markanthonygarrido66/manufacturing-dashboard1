@@ -1,15 +1,15 @@
 from django.shortcuts import render
-from .models import ProductionLine, YieldRecord
 from django.contrib.auth.decorators import login_required
-from .decorators import allowed_roles
-
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
+from django.http import JsonResponse
 
 from django.db.models import Sum, Avg
+from .decorators import allowed_roles
+from .models import ProductionLine, YieldRecord
 
-from django.http import JsonResponse
+
+# =========================
+# MAIN DASHBOARD VIEW
+# =========================
 @login_required
 @allowed_roles(['manager', 'executive'])
 def dashboard(request):
@@ -21,96 +21,55 @@ def dashboard(request):
     start = request.GET.get('start')
     end = request.GET.get('end')
 
+    # FILTERS
     if line:
-        records = records.filter(
-            production_line_id=line
-        )
+        records = records.filter(production_line_id=line)
 
     if start and end:
-        records = records.filter(
-            production_date__range=[start, end]
-        )
+        records = records.filter(production_date__range=[start, end])
 
-    total_yield = records.aggregate(
-        Sum('yield_percentage')
-    )
+    # AGGREGATES (SAFE VERSION)
+    total_yield = records.aggregate(Sum('yield_percentage'))['yield_percentage__sum'] or 0
+    avg_yield = records.aggregate(Avg('yield_percentage'))['yield_percentage__avg'] or 0
 
-    avg_yield = records.aggregate(
-        Avg('yield_percentage')
-    )
+    # CHART DATA
+    chart_labels = list(records.values_list('production_date', flat=True))
+    chart_data = list(records.values_list('yield_percentage', flat=True))
 
-    chart_labels = [
-        str(record.production_date)
-        for record in records
-    ]
-
-    chart_data = [
-        float(record.yield_percentage)
-        for record in records
-    ]
-
-    role = None
-
-    if hasattr(request.user, 'userprofile'):
-        role = request.user.userprofile.role
-
-def dashboard(request):
     context = {
-        "role": "Operator",
-        "total_yield": 0,
-        "avg_yield": 0,
-        "production_count": 0,
-        "efficiency": 0,
-        "records": [],
-        "chart_labels": [],
-        "chart_data": []
+        "production_lines": production_lines,
+        "records": records,
+
+        "total_yield": total_yield,
+        "avg_yield": round(avg_yield, 2),
+        "production_count": records.count(),
+        "efficiency": round(avg_yield, 2),
+
+        # IMPORTANT: keep raw lists (we will convert in template via json_script)
+        "chart_labels": chart_labels,
+        "chart_data": chart_data,
     }
+
     return render(request, "dashboard/dashboard.html", context)
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def push_yield(request):
-
-    line_id = request.data.get('line_id')
-    output = request.data.get('output')
-
-    YieldRecord.objects.create(
-        production_line_id=line_id,
-        output=output
-    )
-
-    return Response({
-        "message": "Yield recorded successfully"
-    })
 
 
-
-def production_view(request):
-    return render(request, "production/production.html")
-
-
-def materials_view(request):
-    return render(request, "materials/materials.html")
-
-
-def sensors_view(request):
-    return render(request, "sensors/sensors.html")
-
+# =========================
+# LIVE API (AJAX / IoT READY)
+# =========================
 def dashboard_live(request):
 
     line = request.GET.get("line")
 
-    data = {
-        "temperature": 27,
-        "humidity": 60,
-        "pressure": 101,
-        "total_yield": 1200,
-        "production_output": 950,
-        "material_used": 400
-    }
+    records = YieldRecord.objects.all()
 
-    if line == "line1":
-        data["production_output"] = 1300
-    elif line == "line2":
-        data["production_output"] = 900
+    if line:
+        records = records.filter(production_line_id=line)
+
+    data = {
+        "total_yield": records.aggregate(Sum('yield_percentage'))['yield_percentage__sum'] or 0,
+        "avg_yield": records.aggregate(Avg('yield_percentage'))['yield_percentage__avg'] or 0,
+        "production_output": records.count(),
+        "material_used": 400  # placeholder (pwede mo palitan later)
+    }
 
     return JsonResponse(data)
