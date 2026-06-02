@@ -6,7 +6,7 @@ from rest_framework_simplejwt.views import (
 )
 from django.contrib.auth import views as auth_views
 from django.contrib.auth.views import LogoutView
-from app.dashboard import views
+from dashboard import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 

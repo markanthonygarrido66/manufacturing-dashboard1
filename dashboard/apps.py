@@ -6,4 +6,4 @@ class DashboardConfig(AppConfig):
     name = 'dashboard'
 
     def ready(self):
-        import app.dashboard.signals
+        import dashboard.signals
