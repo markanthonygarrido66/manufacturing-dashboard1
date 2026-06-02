@@ -1,57 +1,65 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Manufacturing Command Center</title>
+    <title>Manufacturing Control System</title>
 
     <style>
         body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: Arial, sans-serif;
             background: #0b1220;
-            color: #e5e7eb;
+            color: white;
         }
 
-        /* TOPBAR */
+        /* TOP BAR */
         .topbar {
-            height: 60px;
-            background: #0f172a;
+            background: #111827;
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
-            border-bottom: 1px solid #1f2937;
+        }
+
+        /* LAYOUT */
+        .container {
+            display: flex;
         }
 
         /* SIDEBAR */
         .sidebar {
             width: 240px;
-            background: #0f172a;
-            height: 100vh;
-            position: fixed;
+            background: #111827;
+            min-height: 100vh;
             padding: 20px;
-            border-right: 1px solid #1f2937;
         }
 
         .sidebar a {
             display: block;
-            color: #cbd5e1;
-            padding: 10px;
+            color: white;
             text-decoration: none;
+            padding: 10px;
+            margin-bottom: 10px;
             border-radius: 6px;
-            margin-bottom: 8px;
         }
 
         .sidebar a:hover {
-            background: #1e293b;
+            background: #1f2937;
         }
 
         /* MAIN */
         .main {
-            margin-left: 260px;
+            flex: 1;
             padding: 20px;
         }
 
-        /* GRID SYSTEM */
+        /* CARDS */
+        .card {
+            background: #1f2937;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
         .grid {
             display: grid;
             gap: 15px;
@@ -65,75 +73,49 @@
             grid-template-columns: repeat(2, 1fr);
         }
 
-        /* CARDS */
-        .card {
-            background: #111827;
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid #1f2937;
-        }
-
-        .card h3 {
-            margin: 0;
-            font-size: 14px;
-            color: #94a3b8;
-        }
-
-        .card h2 {
-            margin-top: 10px;
-            font-size: 26px;
-        }
-
-        /* BUTTON */
-        .btn {
-            padding: 8px 14px;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
+        button {
+            padding: 8px 12px;
             background: #2563eb;
+            border: none;
             color: white;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
-        .btn-danger {
-            background: #dc2626;
+        select, input {
+            padding: 8px;
+            margin-right: 5px;
         }
-
-        /* TABLE */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #1f2937;
-        }
-
-        th {
-            background: #111827;
-            text-align: left;
-        }
-
     </style>
 </head>
 
 <body>
 
+<!-- TOP BAR -->
 <div class="topbar">
-    <h3>🏭 Manufacturing Command Center</h3>
+    <h2>🏭 Manufacturing Control System</h2>
 
-    <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button style="background:red;">Logout</button>
+    </form>
 </div>
 
-<div class="sidebar">
-    <a href="{% url 'dashboard' %}">📊 Dashboard</a>
-    <a href="{% url 'production' %}">📦 Production</a>
-    <a href="{% url 'materials' %}">🧾 Materials</a>
-    <a href="{% url 'sensors' %}">📡 Sensors</a>
-</div>
+<div class="container">
 
-<div class="main">
-    {% block content %}{% endblock %}
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <a href="{% url 'dashboard' %}">📊 Dashboard</a>
+        <a href="{% url 'production_home' %}">📦 Production</a>
+        <a href="{% url 'materials_home' %}">🧾 Materials</a>
+        <a href="{% url 'sensor_dashboard' %}">📡 Sensors</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+        {% block content %}{% endblock %}
+    </div>
+
 </div>
 
 </body>
