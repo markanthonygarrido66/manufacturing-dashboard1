@@ -56,10 +56,14 @@ def dashboard(request):
 
 def dashboard(request):
     context = {
+        "role": "Operator",
         "total_yield": 0,
+        "avg_yield": 0,
         "production_count": 0,
-        "materials_used": 0,
-        "efficiency": 0
+        "efficiency": 0,
+        "records": [],
+        "chart_labels": [],
+        "chart_data": []
     }
     return render(request, "dashboard/dashboard.html", context)
 @api_view(['POST'])
