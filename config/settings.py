@@ -217,7 +217,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 # LOGIN REDIRECTS
 # =========================
 
-LOGIN_URL = '/'
+LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/'
 
