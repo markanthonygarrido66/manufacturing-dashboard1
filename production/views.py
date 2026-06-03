@@ -7,8 +7,21 @@ from django.utils.timezone import localdate
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.utils.timezone import now
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 
+channel_layer = get_channel_layer()
+
+async_to_sync(channel_layer.group_send)(
+    "production",
+    {
+        "type": "send_update",
+        "data": {
+            "message": "new_data"
+        }
+    }
+)
 @csrf_exempt
 def production_input_api(request):
 
@@ -36,7 +49,7 @@ def production_input_api(request):
             "id": record.id
         })
     
-    
+
 def production_home(request):
     records = ProductionRecord.objects.order_by('-production_date')
 
