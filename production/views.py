@@ -1,10 +1,42 @@
 from django.shortcuts import render
 from django.http import JsonResponse
-from .models import ProductionRecord
+from .models import ProductionRecord, ProductionLine
 import random
 from django.db.models import Sum
 from django.utils.timezone import localdate
+from django.views.decorators.csrf import csrf_exempt
+import json
+from django.utils.timezone import now
 
+
+@csrf_exempt
+def production_input_api(request):
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        line_name = data.get("line")
+        output = int(data.get("output"))
+        yield_percentage = int(data.get("yield"))
+        defects = int(data.get("defects"))
+
+        line, _ = ProductionLine.objects.get_or_create(name=line_name)
+
+        record = ProductionRecord.objects.create(
+            production_line=line,
+            production_date=now().date(),
+            output=output,
+            yield_percentage=yield_percentage,
+            defects=defects
+        )
+
+        return JsonResponse({
+            "status": "success",
+            "id": record.id
+        })
+    
+    
 def production_home(request):
     records = ProductionRecord.objects.order_by('-production_date')
 
@@ -46,3 +78,6 @@ def production_live(request):
         "efficiency": round(efficiency, 2),
         "records": rows
     })
+
+def production_input_page(request):
+    return render(request, "production/production_input.html")

@@ -8,4 +8,7 @@ urlpatterns = [
     views.production_live,
     name="production_live"
 ),
+path("production/input/", views.production_input_page),
+path("api/production/input/", views.production_input_api),
+
 ]

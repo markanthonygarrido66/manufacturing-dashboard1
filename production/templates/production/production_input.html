@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="panel">
+    <h2>📥 Production Input (Factory Side)</h2>
+
+    <form id="prodForm">
+
+        <label>Line Name</label><br>
+        <input type="text" id="line" required><br><br>
+
+        <label>Output</label><br>
+        <input type="number" id="output" required><br><br>
+
+        <label>Yield %</label><br>
+        <input type="number" id="yield" required><br><br>
+
+        <label>Defects</label><br>
+        <input type="number" id="defects" required><br><br>
+
+        <button type="submit">Submit Production</button>
+    </form>
+</div>
+
+<script>
+document.getElementById("prodForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    fetch("/api/production/input/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            line: document.getElementById("line").value,
+            output: document.getElementById("output").value,
+            yield: document.getElementById("yield").value,
+            defects: document.getElementById("defects").value
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Saved Successfully!");
+        console.log(data);
+    });
+});
+</script>
+
+{% endblock %}
