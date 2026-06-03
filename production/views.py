@@ -27,12 +27,24 @@ def production_input_api(request):
         line, _ = ProductionLine.objects.get_or_create(name=line_name)
 
         record = ProductionRecord.objects.create(
+            
             production_line=line,
             production_date=now().date(),
             output=output,
             yield_percentage=yield_percentage,
             defects=defects
         )
+        channel_layer = get_channel_layer()
+
+        async_to_sync(channel_layer.group_send)(
+    "live_system",
+    {
+        "type": "send_update",
+        "data": {
+            "refresh": True
+        }
+    }
+)
         print("🚀 INPUT RECEIVED:", data)
 
         return JsonResponse({
@@ -85,14 +97,3 @@ def production_live(request):
 
 def production_input_page(request):
     return render(request, "production/production_input.html")
-channel_layer = get_channel_layer()
-
-async_to_sync(channel_layer.group_send)(
-    "live_system",
-    {
-        "type": "send_update",
-        "data": {
-            "refresh": True
-        }
-    }
-)

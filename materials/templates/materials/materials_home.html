@@ -224,13 +224,12 @@ setInterval(() => {
 let socket = new WebSocket("wss://" + window.location.host + "/ws/live/");
 
 socket.onmessage = function(event) {
-    console.log("LIVE UPDATE:", event.data);
+    console.log("LIVE UPDATE RECEIVED");
 
-    // reload data WITHOUT refresh
-    if (typeof updateProduction === "function") updateProduction();
-    if (typeof updateDashboard === "function") updateDashboard();
-    if (typeof updateMaterials === "function") updateMaterials();
-    if (typeof updateSensors === "function") updateSensors();
+    updateProduction();
+    updateDashboard();
+    updateMaterials();
+    updateSensors();
 };
 </script>
 

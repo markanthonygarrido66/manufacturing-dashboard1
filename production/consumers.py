@@ -6,7 +6,7 @@ class LiveConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.channel_layer.group_add("live_system", self.channel_name)
         await self.accept()
-
+        print("WS CONNECTED")
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard("live_system", self.channel_name)
 
