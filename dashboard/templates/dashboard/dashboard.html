@@ -231,6 +231,9 @@ function updateChart(){
 
 }
 let socket = new WebSocket("wss://" + window.location.host + "/ws/live/");
+socket.onopen = function() {
+    console.log("CONNECTED");
+};
 
 socket.onmessage = function(event) {
     console.log("LIVE UPDATE RECEIVED");
