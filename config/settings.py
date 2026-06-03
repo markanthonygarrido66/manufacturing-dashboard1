@@ -156,6 +156,7 @@ if os.environ.get('DATABASE_URL'):
 # =========================
 # AUTH
 # =========================
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
