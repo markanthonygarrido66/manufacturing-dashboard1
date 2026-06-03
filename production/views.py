@@ -11,17 +11,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
 
-channel_layer = get_channel_layer()
 
-async_to_sync(channel_layer.group_send)(
-    "live_system",
-    {
-        "type": "send_update",
-        "data": {
-            "refresh": True
-        }
-    }
-)
 @csrf_exempt
 def production_input_api(request):
 
@@ -43,6 +33,7 @@ def production_input_api(request):
             yield_percentage=yield_percentage,
             defects=defects
         )
+        print("🚀 INPUT RECEIVED:", data)
 
         return JsonResponse({
             "status": "success",
@@ -94,3 +85,14 @@ def production_live(request):
 
 def production_input_page(request):
     return render(request, "production/production_input.html")
+channel_layer = get_channel_layer()
+
+async_to_sync(channel_layer.group_send)(
+    "live_system",
+    {
+        "type": "send_update",
+        "data": {
+            "refresh": True
+        }
+    }
+)
