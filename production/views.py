@@ -14,11 +14,11 @@ from channels.layers import get_channel_layer
 channel_layer = get_channel_layer()
 
 async_to_sync(channel_layer.group_send)(
-    "production",
+    "live_system",
     {
         "type": "send_update",
         "data": {
-            "message": "new_data"
+            "refresh": True
         }
     }
 )

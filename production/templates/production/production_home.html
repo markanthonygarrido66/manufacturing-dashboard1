@@ -168,12 +168,16 @@ updateProduction();
 // auto refresh every 5 seconds
 setInterval(updateProduction, 5000);
 
-let socket = new WebSocket("wss://" + window.location.host + "/ws/production/");
+let socket = new WebSocket("wss://" + window.location.host + "/ws/live/");
 
 socket.onmessage = function(event) {
-    console.log("LIVE UPDATE RECEIVED:", event.data);
+    console.log("LIVE UPDATE:", event.data);
 
-    updateProduction(); // reuse mo existing function
+    // reload data WITHOUT refresh
+    if (typeof updateProduction === "function") updateProduction();
+    if (typeof updateDashboard === "function") updateDashboard();
+    if (typeof updateMaterials === "function") updateMaterials();
+    if (typeof updateSensors === "function") updateSensors();
 };
 </script>
 
