@@ -2,168 +2,109 @@
 {% block content %}
 
 <style>
-
-/* =========================
-   MODERN PRODUCTION PAGE
-========================= */
-tr {
-    transition: all 0.3s ease;
-}
 body {
     background: #0b1220;
 }
 
-/* HEADER */
 .header {
     background: linear-gradient(135deg, #0f172a, #1e293b);
     color: white;
     padding: 25px;
     border-radius: 16px;
     margin-bottom: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.header h2 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.header small {
-    opacity: 0.7;
-}
-
-/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
 }
 
-/* CARD */
 .card {
-    background: linear-gradient(145deg, #111827, #0f172a);
+    background: #111827;
     border: 1px solid #1f2937;
     padding: 20px;
     border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    transition: 0.3s ease;
     color: white;
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-}
-
-/* VALUE */
 .value {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: bold;
     color: #38bdf8;
 }
 
-/* LABEL */
 .label {
     color: #94a3b8;
     font-size: 14px;
 }
 
-/* STATUS */
 .status {
-    display: inline-block;
+    margin-top: 10px;
+    font-size: 12px;
     padding: 5px 10px;
     border-radius: 20px;
-    font-size: 12px;
-    margin-top: 10px;
-}
-
-.online {
+    display: inline-block;
     background: #22c55e;
     color: white;
 }
 
-.offline {
-    background: #ef4444;
-    color: white;
-}
-
-/* PANEL */
 .panel {
     margin-top: 20px;
     background: #0f172a;
-    border: 1px solid #1f2937;
-    border-radius: 16px;
     padding: 20px;
+    border-radius: 16px;
+    color: white;
 }
 
-.panel h3 {
-    color: #cbd5e1;
-    margin-bottom: 15px;
-}
-
-/* TABLE */
 table {
     width: 100%;
     border-collapse: collapse;
     color: white;
 }
 
-th {
-    background: #111827;
-    padding: 12px;
-    text-align: left;
-    color: #94a3b8;
-}
-
-td {
+th, td {
     padding: 12px;
     border-bottom: 1px solid #1f2937;
 }
-
 </style>
 
 <!-- HEADER -->
 <div class="header">
     <h2>🏭 Production Control Room</h2>
-    <small>Real-time production monitoring & management</small>
+    <small>Real-time production monitoring</small>
 </div>
 
-<!-- PRODUCTION GRID -->
+<!-- CARDS -->
 <div class="grid">
 
     <div class="card">
         <div class="label">Total Output</div>
-        <div class="value" id="total_output">
-    {{ total_output|default:0 }}
-</div>
-        <div class="status online">ACTIVE</div>
+        <div class="value" id="total_output">0</div>
+        <div class="status">ACTIVE</div>
     </div>
 
     <div class="card">
         <div class="label">Daily Production</div>
-        <div class="value" id="daily_production">
-    {{ daily_production|default:0 }}
-</div>
-        <div class="status online">RUNNING</div>
+        <div class="value" id="daily_production">0</div>
+        <div class="status">RUNNING</div>
     </div>
 
     <div class="card">
-        <div class="label">Efficiency Rate</div>
-        <div class="value" id="efficiency">
-    {{ efficiency|default:0 }}%
-</div>
-        <div class="status online">OPTIMAL</div>
+        <div class="label">Efficiency</div>
+        <div class="value" id="efficiency">0%</div>
+        <div class="status">OPTIMAL</div>
     </div>
 
     <div class="card">
         <div class="label">Machine Status</div>
         <div class="value">LIVE</div>
-        <div class="status online">ALL SYSTEMS</div>
+        <div class="status">ALL SYSTEMS</div>
     </div>
 
 </div>
 
-<!-- PRODUCTION TABLE -->
+<!-- TABLE -->
 <div class="panel">
     <h3>📋 Production Records</h3>
 
@@ -176,66 +117,56 @@ td {
             </tr>
         </thead>
 
-        <tbody id="production-body">
-
-            {% for r in records %}
-            <tr>
-                <td>{{ r.production_line }}</td>
-                <td>{{ r.output }}</td>
-                <td>{{ r.production_date }}</td>
-            </tr>
-            {% endfor %}
-
-        </tbody>
+        <tbody id="production-body"></tbody>
 
     </table>
 </div>
 
-
+<!-- JAVASCRIPT (FIXED) -->
 <script>
+function updateProduction() {
 
-function updateProduction(){
+    console.log("Updating production...");
 
-    fetch("/production/live/")
+    fetch("/production/live/?t=" + new Date().getTime())
     .then(res => res.json())
     .then(data => {
 
-        let total = 0;
+        console.log("DATA RECEIVED:", data);
 
-        // FIX: use data.records not data itself
-        data.records.forEach(item => {
-            total += item.output;
-        });
+        // Update cards
+        document.getElementById("total_output").innerText = data.total_output;
+        document.getElementById("daily_production").innerText = data.daily_production;
+        document.getElementById("efficiency").innerText = data.efficiency + "%";
 
-        document.getElementById("total_output").innerText =
-            data.total_output;
-
-        document.getElementById("daily_production").innerText =
-            data.daily_production;
-
-        document.getElementById("efficiency").innerText =
-            data.efficiency + "%";
-
+        // Update table
         let rows = "";
 
         data.records.forEach(item => {
             rows += `
-            <tr>
-                <td>${item.line}</td>
-                <td>${item.output}</td>
-                <td>${item.date}</td>
-            </tr>
+                <tr>
+                    <td>${item.line}</td>
+                    <td>${item.output}</td>
+                    <td>${item.date}</td>
+                </tr>
             `;
         });
 
         document.getElementById("production-body").innerHTML = rows;
+    })
+    .catch(error => {
+        console.error("Fetch error:", error);
     });
 }
 
+// IMPORTANT: make sure it runs globally
+window.updateProduction = updateProduction;
+
+// initial load
 updateProduction();
 
+// auto refresh every 5 seconds
 setInterval(updateProduction, 5000);
-
 </script>
 
 {% endblock %}
