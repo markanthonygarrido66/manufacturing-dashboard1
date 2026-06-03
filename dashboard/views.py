@@ -19,6 +19,7 @@ from dashboard.models import YieldRecord
 @allowed_roles(['manager', 'executive'])
 def dashboard(request):
 
+
     production_lines = ProductionLine.objects.all()
     records = YieldRecord.objects.all()
 
@@ -55,8 +56,15 @@ def dashboard(request):
         "chart_data": chart_data,
     }
 
-    return render(request, "dashboard/dashboard.html", context)
+    role = request.user.role
 
+    return render(
+        request,
+        "dashboard/dashboard.html",
+        {
+            "role": role
+        }
+    )
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def push_yield(request):

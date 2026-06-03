@@ -39,10 +39,20 @@ document.getElementById("prodForm").addEventListener("submit", function(e){
         })
     })
     .then(res => res.json())
-    .then(data => {
-        alert("Saved Successfully!");
-        console.log(data);
-    });
+   .then(data => {
+
+    // refresh dashboard data
+    localStorage.setItem(
+        "production_update",
+        JSON.stringify(data)
+    );
+
+    window.dispatchEvent(
+        new Event("production_update")
+    );
+
+    alert("Saved Successfully!");
+});
 });
 </script>
 

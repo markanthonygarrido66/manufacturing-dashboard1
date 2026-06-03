@@ -160,6 +160,10 @@ canvas {
         <div class="value live">LIVE</div>
     </div>
 
+    <h2 id="totalOutput">0</h2>
+    <h2 id="yieldRate">0</h2>
+    <h2 id="defectRate">0</h2>
+
 </div>
 
 <!-- CHART -->
@@ -167,6 +171,16 @@ canvas {
     <h3>📊 Live Production Trend</h3>
     <canvas id="chart"></canvas>
 </div>
+
+{% if role == 'boss' %}
+
+<div class="card">
+    <h3>Executive Monitoring</h3>
+    <p>All Factory Production</p>
+</div>
+
+{% endif %}
+
 
 <!-- JSON SAFE DATA -->
 {{ chart_labels|json_script:"labels-data" }}
@@ -247,5 +261,39 @@ socket.onmessage = function(event) {
 setInterval(updateChart, 5000);
 </script>
 
+<script>
+
+function refreshDashboard(){
+
+    let data =
+        localStorage.getItem(
+            "production_update"
+        );
+
+    if(!data) return;
+
+    data = JSON.parse(data);
+
+    document.getElementById(
+        "totalOutput"
+    ).innerText = data.output;
+
+    document.getElementById(
+        "yieldRate"
+    ).innerText = data.yield + "%";
+
+    document.getElementById(
+        "defectRate"
+    ).innerText = data.defects;
+}
+
+refreshDashboard();
+
+window.addEventListener(
+    "production_update",
+    refreshDashboard
+);
+
+</script>
 
 {% endblock %}

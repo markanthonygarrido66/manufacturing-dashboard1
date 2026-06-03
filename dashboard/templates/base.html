@@ -105,13 +105,32 @@
 
     <!-- SIDEBAR -->
     <div class="sidebar">
+        <div class="card">
+    <h4>Live Production</h4>
+
+    Output:
+    <span id="sidebar_output">0</span>
+
+    <br>
+
+    Yield:
+    <span id="sidebar_yield">0</span>
+
+    <br>
+
+    Defects:
+    <span id="sidebar_defects">0</span>
+</div>
+
         <a href="{% url 'dashboard' %}">📊 Dashboard</a>
         <a href="{% url 'production_home' %}">📦 Production</a>
         <a href="{% url 'materials_home' %}">🧾 Materials</a>
         <a href="{% url 'sensor_dashboard' %}">📡 Sensors</a>
-    <li>
-        <a href="{% url 'production_input_page' %}">📥 Factory Input</a> 
-    </li>
+   {% if request.user.userprofile.role == 'worker' %}
+    <a href="{% url 'production_input_page' %}">
+        📥 Factory Input
+    </a>
+{% endif %}
     </div>
 
     <!-- MAIN CONTENT -->
@@ -120,6 +139,41 @@
     </div>
 
 </div>
+
+<script>
+
+function updateSidebar(){
+
+    let data =
+        localStorage.getItem(
+            "production_update"
+        );
+
+    if(!data) return;
+
+    data = JSON.parse(data);
+
+    document.getElementById(
+        "sidebar_output"
+    ).innerText = data.output;
+
+    document.getElementById(
+        "sidebar_yield"
+    ).innerText = data.yield;
+
+    document.getElementById(
+        "sidebar_defects"
+    ).innerText = data.defects;
+}
+
+updateSidebar();
+
+window.addEventListener(
+    "production_update",
+    updateSidebar
+);
+
+</script>
 
 </body>
 </html>
