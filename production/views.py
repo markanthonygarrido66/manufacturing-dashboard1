@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .models import ProductionRecord
 import random
+from django.db.models import Sum
+from django.utils.timezone import localdate
 
 def production_home(request):
     records = ProductionRecord.objects.order_by('-production_date')
@@ -19,30 +21,28 @@ def production_live(request):
 
     records = ProductionRecord.objects.order_by('-production_date')
 
-    total_output = sum(r.yield_percentage for r in records)
+    today = localdate()
 
-    daily_production = random.randint(80, 150)
+    today_records = ProductionRecord.objects.filter(production_date=today)
 
-    efficiency = random.randint(85, 99)
+    total_output = records.aggregate(total=Sum("output"))["total"] or 0
+
+    daily_production = today_records.aggregate(total=Sum("output"))["total"] or 0
+
+    efficiency = (daily_production / 200) * 100 if daily_production else 0
 
     rows = []
 
     for r in records[:10]:
-
         rows.append({
             "line": r.production_line.name,
-            "output": round(
-                r.yield_percentage + random.randint(-2, 2),
-                2
-            ),
+            "output": r.output,
             "date": str(r.production_date)
         })
 
-    data = {
-        "total_output": round(total_output, 2),
+    return JsonResponse({
+        "total_output": total_output,
         "daily_production": daily_production,
-        "efficiency": efficiency,
+        "efficiency": round(efficiency, 2),
         "records": rows
-    }
-
-    return JsonResponse(data)
+    })

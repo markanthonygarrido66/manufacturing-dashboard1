@@ -197,32 +197,28 @@ td {
 function updateProduction(){
 
     fetch("/production/live/")
-    .then(response => response.json())
+    .then(res => res.json())
     .then(data => {
 
         let total = 0;
 
-        data.forEach(item => {
+        // FIX: use data.records not data itself
+        data.records.forEach(item => {
             total += item.output;
         });
 
-        document.getElementById(
-            "total_output"
-        ).innerText = total;
+        document.getElementById("total_output").innerText =
+            data.total_output;
 
-        document.getElementById(
-            "daily_production"
-        ).innerText = data[0].output;
+        document.getElementById("daily_production").innerText =
+            data.daily_production;
 
-        document.getElementById(
-            "efficiency"
-        ).innerText =
-            Math.floor(Math.random()*10)+90 + "%";
+        document.getElementById("efficiency").innerText =
+            data.efficiency + "%";
 
         let rows = "";
 
-        data.forEach(item => {
-
+        data.records.forEach(item => {
             rows += `
             <tr>
                 <td>${item.line}</td>
@@ -232,12 +228,8 @@ function updateProduction(){
             `;
         });
 
-        document.getElementById(
-            "production-body"
-        ).innerHTML = rows;
-
+        document.getElementById("production-body").innerHTML = rows;
     });
-
 }
 
 updateProduction();
